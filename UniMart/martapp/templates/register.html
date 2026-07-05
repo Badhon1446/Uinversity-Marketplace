@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/register_style.css' %}" />
+    <title>Register</title>
+  </head>
+
+  <body>
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="register">
+        <h1>Register</h1>
+
+        <div class="form1">
+          <label for="first_name">First Name</label>
+          <input type="text" id="first_name" name="first_name" placeholder="First Name" required />
+        </div>
+
+        <div class="form1">
+          <label for="last_name">Last Name</label>
+          <input type="text" id="last_name" name="last_name" placeholder="Last Name" required />
+        </div>
+
+        <div class="form1">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Username" required />
+        </div>
+
+        <div class="form2">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Email" required />
+        </div>
+
+        <div class="form3">
+          <label for="phone">Phone</label>
+          <input type="number" id="phone" name="phone" placeholder="Phone Number" required />
+        </div>
+
+        <div class="form4">
+          <label for="address">Address</label>
+          <input type="text" id="address" name="address" placeholder="Address" required />
+        </div>
+
+        <div class="form5">
+          <label for="password1">Enter Password</label>
+          <input type="password" id="password1" name="password1" placeholder="Password" required />
+        </div>
+
+        <div class="form5">
+          <label for="password2">Confirm Password</label>
+          <input type="password" id="password2" name="password2" placeholder="Confirm Password" required />
+        </div>
+
+        <div class="remember">
+          <input type="checkbox" id="remember" name="is_active" required />
+          <label for="remember">I agree to the terms and conditions</label>
+        </div>
+
+        <button type="submit">Register</button>
+
+        <p>
+          Already have an account?
+          <a href="#">Login</a>
+        </p>
+      </div>
+    </form>
+  </body>
+</html>

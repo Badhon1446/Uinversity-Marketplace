@@ -1,0 +1,105 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+.register{
+    width: 380px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+
+    margin: 20px 0;
+}
+
+.register h1{
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.register div{
+    margin-bottom: 15px;
+}
+
+.register label{
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+
+.register input{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    outline: none;
+}
+
+.register input:focus{
+    border-color: #007bff;
+}
+
+.register button{
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.register button:hover{
+    background: #0056b3;
+}
+
+.register p{
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register a{
+    text-decoration: none;
+    color: #007bff;
+    margin-left: 5px;
+}
+
+.register a:hover{
+    text-decoration: underline;
+}
+.remember{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.remember input{
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.remember label{
+    display: inline;
+    margin: 0;
+    font-size: 15px;
+    font-weight: bold;
+}
