@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from . import models
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login as auth_login,logout
 # Create your views here.
 def user_login(request):
     print(request.method)
@@ -9,7 +9,6 @@ def user_login(request):
         password = request.POST.get('password')
         if not models.User.objects.filter(email=email).exists():
             return render(request,'login.html',{'error':"email does not exists!"})
-        
         user = models.User.objects.get(email=email)
 
         if not user.check_password(password):
@@ -17,6 +16,10 @@ def user_login(request):
         auth_login(request,user)
         return redirect('home')
     return render(request,'login.html')
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
 
 def register(request):
     if request.method=='POST':
@@ -49,5 +52,7 @@ def register(request):
     return render(request,'register.html')
 
 def home(request):
+    products = models.Product.objects.all().order_by('-id')[:8]
+
     
-    return render(request,'home.html')
+    return render(request,'home.html',{'products':products})

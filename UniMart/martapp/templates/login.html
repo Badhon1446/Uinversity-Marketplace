@@ -1,35 +1,38 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'css/login_style.css' %}" />
-    <title>Document</title>
-  </head>
-  <body>
-    <form method="POST">
-      {% csrf_token %}
-      <div class="loginform">
-        <h1>Login</h1>
+{% extends 'base.html' %}
+{% block content %}
 
-        <div class="email">
-          <label for="email">Email:</label>
-          <input type="email" name="email" placeholder="Enter email" />
-        </div>
-        <div class="password">
-          <label for="password">Password</label>
-          <input type="password" name="password" placeholder="Enter password" />
-        </div>
-        <div class="remember">
-          <input type="checkbox" id="remember" />
-          <label for="remember">Remember Me</label>
-        </div>
-        <button type="submit">Login</button>
-        <p>
-          don't have an account?<a href="#">register</a>
-        </p>
-      </div>
-    </form>
-  </body>
-</html>
+<div class="max-w-md mx-auto my-20 bg-white shadow-lg rounded-xl p-8">
+  <h2 class="text-3xl font-bold text-center text-slate-800 mb-8">
+    Login
+  </h2>
+
+  <form method="POST" class="space-y-6">
+
+    {% csrf_token %}
+
+    <div>
+      <label class="block mb-2 font-medium">Email</label>
+      <input type="text" name="email" required
+        class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500">
+    </div>
+
+    <div>
+      <label class="block mb-2 font-medium">Password</label>
+      <input type="password" name="password" required
+        class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500">
+    </div>
+
+    <button type="submit"
+      class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-semibold duration-300">
+      Login
+    </button>
+
+    <p class="text-center">
+      Don't have an account?
+      <a href="{% url 'register' %}" class="text-blue-600 hover:underline">
+        Register
+      </a>
+    </p>
+  </form>
+</div>
+{% endblock %}

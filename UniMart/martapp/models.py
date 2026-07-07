@@ -6,7 +6,7 @@ class Register(models.Model):
     last_name = models.CharField(max_length=150)
     username = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
-    phone = models.IntegerField(max_length=11)
+    # phone = models.IntegerField(max_length=11)
     password = models.CharField(max_length=150)
     is_active = models.BooleanField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -32,9 +32,16 @@ class Category(models.Model):
         return self.name
     
 class Product(models.Model):
+
+    CONDITION_CHOICE = [
+        ('new','New'),
+        ('used','Used'),
+    ]
+
     name = models.CharField(max_length=150)
     description = models.CharField(max_length=300)
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    condition = models.CharField(max_length=150,choices=CONDITION_CHOICE,default='used')
     price = models.IntegerField()
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to='media/image')
