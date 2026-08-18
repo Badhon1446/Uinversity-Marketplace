@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'UniMart.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'unimartdb',
+        'NAME': 'unimart12db',
         'USER': 'root',
-        'PASSWORD':'1234',
-        'HOST':'localhost',
-        'PORT':3306,
+        'PASSWORD': 'rony1234',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -116,6 +116,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
@@ -126,4 +127,4 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media/'

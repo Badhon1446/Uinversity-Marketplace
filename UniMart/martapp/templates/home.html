@@ -1,13 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="max-w-7xl mx-auto px-6 py-16">
-    <div class="text-center">
-        <h1 class="text-5xl font-bold text-slate-800 mb-5">Welcome to UniMart</h1>
-        <p class="text-lg text-gray-600 mb-12">Buy, Sell and Exchange Products inside your University Campus.</p>
+  <section class="max-w-7xl mx-auto px-6 py-4">
+    <div class="max-w-4xl mx-auto px-4">
+      <form method="GET" action="{% url 'product_list' %}">
+      <div class="flex flex-col sm:flex-row items-stretch bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+        <div class="flex-1 flex items-center">
+          <input type="text" name="search" placeholder="Search products..." class="w-full px-6 py-4 text-gray-700 placeholder-gray-400 outline-none bg-transparent" />
+        </div>
+        <button type="submit" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-semibold transition duration-200 sm:min-w-[130px]">Search</button>
+      </div>
+    </form>
+    </div>
+    <div class="w-full px-4 md:px-8 mb-8">
+      <div class="relative w-full h-[420px] md:h-[450px] overflow-hidden rounded-2xl shadow-xl">
+        <div id="heroSlider" class="flex h-full transition-transform duration-700 ease-in-out">
+          {% for banner in banners %}
+            <div class="hero-slide flex-none w-full h-full relative">
+              <img src="{{ banner.image.url }}" alt="{{ banner.title }}" class="w-full h-full object-cover" />
+
+              <div class="absolute inset-0"></div>
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full max-w-7xl mx-auto px-8 lg:px-20">
+                  <h1 class="text-3xl md:text-5xl font-bold scale-y-125 origin-left text-white">{{ banner.title }}</h1>
+
+                  <p class="mt-4 text-base md:text-lg text-gray-100 max-w-xl">{{ banner.subtitle }}</p>
+
+                  <a href="{{ banner.button_link }}" class="inline-block mt-8 bg-amber-500 hover:bg-amber-600 px-6 py-3 rounded-xl text-white font-semibold animate-bounce">{{ banner.button_text }}</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <button id="prevBtn" type="button" class="absolute left-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 backdrop-blur text-white text-xl transition">❮</button>
+        <button id="nextBtn" type="button" class="absolute right-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 backdrop-blur text-white text-xl transition">❯</button>
+        <div id="dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+          {% for banner in banners %}
+            <button type="button" class="dot w-3 h-3 rounded-full bg-white/50 transition-all duration-300"></button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-2 mb-2">
+      <h3 class="text-3xl font-bold text-slate-800 mb-2">Shop by Categories</h3>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<<<<<<< HEAD
         <div class="bg-white rounded-xl shadow-md p-8 text-center hover:-translate-y-2 duration-300">
             <i class="fa-solid fa-cart-shopping text-5xl text-slate-800 mb-5"></i>
             <h3 class="text-xl font-bold mb-3">Buy & Sell</h3>
@@ -26,6 +66,53 @@
             <h3 class="text-xl font-bold mb-3">Contact</h3>
             <p class="text-gray-600">Contact with our support.</p>
         </div>
+=======
+      {% for category in categories %}
+        <a href="#{% comment %}{% url 'product_list' %}?category={{ category.slug }}{% endcomment %}" class="bg-white rounded-xl shadow-md p-8 text-center hover:-translate-y-2 duration-300">
+          <img src="{{ category.image.url }}" alt="{{ product.name }}" class="w-full h-52 object-cover" />
+          <h3 class="text-xl font-bold mb-3">{{ category.name }}</h3>
+          {% comment %} <p class="text-gray-600">{{ category.product_set.count }} Products</p> {% endcomment %}
+        </a>
+      {% endfor %}
+>>>>>>> 28db1f01db5b2f94f0570946e51f041acd658ebb
     </div>
-</section>
+
+    <div class="text-center p-2 mt-2">
+      <h3 class="text-3xl font-bold text-slate-800 mb-3">Featured Products</h3>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+      {% for product in products %}
+        <div class="group relative bg-white rounded-lg shadow-md hover:shadow-xl duration-300 overflow-hidden">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110" />
+
+          <div class="absolute top-0 left-0 w-full h-52 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300">
+            <div class="absolute bottom-4 left-4 flex items-center gap-3">
+              <a href="#" class="bg-lime-500 text-white px-5 py-2 rounded-lg hover:bg-emerald-700 translate-y-6 group-hover:translate-y-0 transition duration-300">Buy Now</a>
+            </div>
+            <div class="absolute bottom-4 right-4 flex items-center gap-3">
+              <a href="#" class="bg-white text-indigo-600 p-3 rounded-full hover:bg-indigo-600 hover:text-white translate-y-6 group-hover:translate-y-0 transition duration-300"><i class="fa-solid fa-cart-shopping gap-2"></i></a>
+            </div>
+          </div>
+
+          <div class="p-4">
+            <h2 class="text-lg font-semibold mb-2 truncate">{{ product.name }}</h2>
+            <p class="text-sm text-gray-500">{{ product.description|truncatechars:20 }}</p>
+            <p class="text-sm mt-1">
+              Condition:{% if product.condition == 'new' %}
+                <span class="font-medium text-lime-600">{{ product.get_condition_display }}</span>
+              {% elif product.condition == 'used' %}
+                <span class="font-medium text-red-600">{{ product.get_condition_display }}</span>
+              {% endif %}
+            </p>
+            <h4 class="flex items-center gap-1 mt-2">
+              <span class="text-2xl font-bold text-3xl text-amber-600 leading-none">৳</span>
+              <span class="text-2xl font-bold text-amber-600">{{ product.price }}</span>
+            </h4>
+            <a href="#" class="block mt-2 text-center bg-green-600 text-white py-2 rounded hover:bg-green-800 duration-300">View Details</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
 {% endblock %}

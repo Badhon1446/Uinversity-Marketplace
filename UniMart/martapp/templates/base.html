@@ -3,63 +3,245 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-        {% block title %}
-        UniMart
-        {% endblock %}
-    </title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    {% block title %}
+    UniMart
+    {% endblock %}
+  </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
 </head>
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
-    <nav class="bg-slate-800 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="{% url 'home' %}" class="text-2xl font-bold tracking-wide">UniMart</a>
-            <ul class="hidden md:flex items-center gap-8 font-medium">
-                <li>
-                    <a href="{% url 'home' %}" class="hover:text-yellow-400 duration-300">Home</a>
-                </li>
+  <nav class="bg-slate-800 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
+      <a href="{% url 'home' %}" class="text-2xl font-bold tracking-wide">UniMart</a>
+      <ul class="hidden md:flex items-center gap-4 font-medium">
+        <li>
+          <a href="{% url 'home' %}" class="hover:text-yellow-400 duration-300">Home</a>
+        </li>
+        <li>
+          <a href="{% url "product_list" %}" class="hover:text-yellow-400 duration-300">Product List</a>
+        </li>
 
-                <li>
-                    <a href="#" class="hover:text-yellow-400 duration-300">About</a>
-                </li>
+        <!-- <li>
+          <a href="#" class="hover:text-yellow-400 duration-300">About</a>
+        </li> -->
 
-                <li>
-                    <a href="#" class="hover:text-yellow-400 duration-300">Services</a>
-                </li>
-            </ul>
+        <li>
+          <a href="#" class="hover:text-yellow-400 duration-300">Services</a>
+        </li>
+      </ul>
 
-            <div class="flex items-center gap-3">
-                {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}"
-                    class="px-5 py-2 rounded-md bg-red-500 hover:bg-red-600 duration-300">Logout</a>
-                {% else %}
-                <a href="{% url 'login' %}"
-                    class="px-5 py-2 rounded-md border border-white hover:bg-white hover:text-slate-800 duration-300">Login</a>
+      <div class="flex items-center gap-3">
+        {% if user.is_authenticated %}
+        <div class="relative group">
+          <button class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-slate-700 transition">
+            <img src="{{ request.user.profile.image.url }}" alt="Profile"
+              class="w-9 h-9 rounded-full object-cover border-2 border-white">
+            <span>{{ user.username }}</span>
+            <i class="fa-solid fa-chevron-down text-sm"></i>
+          </button>
 
-                <a href="{% url 'register' %}"
-                    class="px-5 py-2 rounded-md bg-yellow-400 text-slate-900 hover:bg-yellow-300 duration-300 font-semibold">Register</a>
-                {% endif %}
-            </div>
+          <div class="absolute right-0 w-47 bg-indigo-950 rounded-lg shadow-lg opacity-10 invisible group-hover:opacity-100
+                group-hover:visible transition duration-300 z-50">
+
+            <a href="{% url 'profile' %}" class="block px-4 py-3 hover:bg-indigo-700"><i
+                class="fa-regular fa-user mr-2"></i>
+              View Profile
+            </a>
+
+            <a href="#" class="block px-4 py-3 hover:bg-indigo-700">
+              <i class="fa-solid fa-user-pen mr-2"></i>
+              Edit Profile
+            </a>
+
+            <a href="#" class="block px-4 py-3 hover:bg-indigo-700">
+              <i class="fa-solid fa-bag-shopping mr-2"></i>
+              My Shopping
+            </a>
+
+            <a href="{% url 'logout' %}" class="bg-red-600 block px-4 py-3 hover:bg-red-700">
+              <i class="fa-solid fa-right-from-bracket mr-2"></i>
+              Logout
+            </a>
+
+          </div>
+
+
+          <!-- <div
+            class="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+            <a href="{% url 'profile' %} class=" block px-5 py-3 text-gray-700 hover:bg-gray-100">My Profile</a>
+
+            <a href="#" class="block px-5 py-3 text-gray-700 hover:bg-gray-100">Update Profile</a>
+            <hr />
+            <a href="{% url 'logout' %}" class="block px-5 py-3 text-red-600 hover:bg-red-50">Logout</a>
+          </div> -->
         </div>
-    </nav>
+        {% else %}
+        <a href="{% url 'login' %}"
+          class="px-5 py-2 rounded-md border border-white hover:bg-white hover:text-slate-800 duration-300">Login</a>
 
-    <main class="flex-1">
-        {% block content %}
+        <a href="{% url 'register' %}"
+          class="px-5 py-2 rounded-md bg-yellow-400 text-slate-900 hover:bg-yellow-300 duration-300 font-semibold">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
 
-        {% endblock %}
-    </main>
+  {% if messages %}
+  <div class="fixed top-5 right-5 z-50 space-y-3">
+    {% for message in messages %}
+    <div class="message
+                    transform transition-all duration-500
+                    opacity-100 translate-x-0
+                    min-w-[300px] max-w-md
+                    px-5 py-3 rounded-lg shadow-lg text-white
 
-    <footer class="bg-slate-800 text-white mt-16">
-        <div class="max-w-7xl mx-auto py-8 text-center">
-            <h3 class="text-2xl font-bold mb-2">UniMart</h3>
-            <p class="text-gray-300">A University Marketplace for Buying, Selling and Sharing.</p>
-            <p class="text-gray-400 mt-2">© 2026 UniMart. All Rights Reserved.</p>
+                    {% if message.tags == 'success' %}
+              
+                        bg-green-500
+
+            {% elif message.tags == 'error' %}
+              
+              
+                        bg-red-500
+
+
+            {% elif message.tags == 'warning' %}
+                            
+                        bg-yellow-500 text-black
+
+            {% else %}
+                            
+                        bg-blue-500
+
+            {% endif %}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main class="flex-1">
+    {% block content %}
+
+    {% endblock %}
+  </main>
+
+  <footer class="bg-slate-900 text-gray-300 mt-16">
+    <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+      <!-- Brand -->
+      <div>
+        <h2 class="text-3xl font-bold text-white mb-4">UniMart</h2>
+        <p class="text-sm leading-6">
+          UniMart is a trusted university marketplace where students can buy,
+          sell, and exchange products safely within their campus community.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+          <li>
+            <a href="{% url 'home' %}" class="hover:text-indigo-400 transition">
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-indigo-400 transition">
+              About Us
+            </a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-indigo-400 transition">
+              Products
+            </a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-indigo-400 transition">
+              Contact
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-4">Services</h3>
+        <ul class="space-y-2">
+          <li>Buy Products</li>
+          <li>Sell Products</li>
+          <li>Secure Marketplace</li>
+          <li>Student Community</li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-4">Contact Us</h3>
+
+        <div class="space-y-3">
+
+          <p class="flex items-center gap-2">
+            <i class="fa-solid fa-envelope text-indigo-400"></i>
+            <a href="mailto:unimart26@gmail.com" class="hover:text-indigo-400 transition">
+              unimart26@gmail.com
+            </a>
+          </p>
+
+          <p class="flex items-center gap-2">
+            <i class="fa-brands fa-facebook text-indigo-400"></i>
+            <a href="#" class="hover:text-indigo-400 transition">
+              UniMart
+            </a>
+          </p>
+
         </div>
-    </footer>
+      </div>
+
+    </div>
+
+    <div class="bg-indigo-950 border-t-2 border-slate-700">
+      <div class="bg-danger max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center text-sm">
+
+        <p>
+          © 2026 <span class="font-semibold text-white">UniMart</span>. All Rights Reserved.
+        </p>
+
+        <p class="mt-3 md:mt-0">
+          Designed & Developed by
+          <span class="text-indigo-400 font-semibold">UniMart Team</span>
+        </p>
+
+      </div>
+    </div>
+  </footer>
+  <script src="{% static 'js/carousel.js' %}"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const messages = document.querySelectorAll('.message')
+
+      messages.forEach(function (msg) {
+        setTimeout(function () {
+          // Smooth fade + slide
+          msg.classList.add('opacity-0', 'translate-x-10')
+
+          // Animation শেষ হলে remove
+          setTimeout(function () {
+            msg.remove()
+          }, 500)
+        }, 3000)
+      })
+    })
+
+
+  </script>
+  
 </body>
 
 </html>

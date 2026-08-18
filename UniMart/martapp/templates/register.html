@@ -1,72 +1,151 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'css/register_style.css' %}" />
-    <title>Register</title>
-  </head>
-
-  <body>
-    <form method="POST">
+{% extends 'base.html' %}
+{% block content %}
+  <div class="max-w-md mx-auto my-16 bg-white shadow-lg rounded-xl p-8">
+    <h2 class="text-3xl font-bold text-center text-slate-800 mb-8">Create Account</h2>
+    <form method="POST" class="space-y-5">
       {% csrf_token %}
 
-      <div class="register">
-        <h1>Register</h1>
-
-        <div class="form1">
-          <label for="first_name">First Name</label>
-          <input type="text" id="first_name" name="first_name" placeholder="First Name" required />
-        </div>
-
-        <div class="form1">
-          <label for="last_name">Last Name</label>
-          <input type="text" id="last_name" name="last_name" placeholder="Last Name" required />
-        </div>
-
-        <div class="form1">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Username" required />
-        </div>
-
-        <div class="form2">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Email" required />
-        </div>
-
-        <div class="form3">
-          <label for="phone">Phone</label>
-          <input type="number" id="phone" name="phone" placeholder="Phone Number" required />
-        </div>
-
-        <div class="form4">
-          <label for="address">Address</label>
-          <input type="text" id="address" name="address" placeholder="Address" required />
-        </div>
-
-        <div class="form5">
-          <label for="password1">Enter Password</label>
-          <input type="password" id="password1" name="password1" placeholder="Password" required />
-        </div>
-
-        <div class="form5">
-          <label for="password2">Confirm Password</label>
-          <input type="password" id="password2" name="password2" placeholder="Confirm Password" required />
-        </div>
-
-        <div class="remember">
-          <input type="checkbox" id="remember" name="is_active" required />
-          <label for="remember">I agree to the terms and conditions</label>
-        </div>
-
-        <button type="submit">Register</button>
-
-        <p>
-          Already have an account?
-          <a href="#">Login</a>
-        </p>
+      <div>
+        <label class="block mb-2 font-medium">First Name</label>
+        <input type="text" name="first_name" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
       </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Last Name</label>
+        <input type="text" name="last_name" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Username</label>
+        <input type="text" name="username" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Email</label>
+        <input type="email" id="email" name="email" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+
+        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+          <div id="emailBar" class="h-2 rounded-full bg-red-500 transition-all duration-300" style="width:0%"></div>
+        </div>
+
+        <p id="emailText" class="text-sm mt-1"></p>
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Phone</label>
+        <input type="text" name="phone" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Address</label>
+        <input type="text" name="address" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Password</label>
+        <input type="password" id="password" name="password1" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+
+        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+          <div id="passwordBar" class="h-2 rounded-full bg-red-500 transition-all duration-300" style="width:0%"></div>
+        </div>
+
+        <p id="passwordText" class="text-sm mt-1"></p>
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Confirm Password</label>
+        <input type="password" name="password2" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input type="checkbox" name="is_active" required />
+        <label>I agree to the Terms & Conditions</label>
+      </div>
+
+      <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-semibold duration-300">Register</button>
+
+      <p class="text-center">
+        Already have an account?
+        <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a>
+      </p>
     </form>
-  </body>
-</html>
+  </div>
+  
+  <script>
+
+const email = document.getElementById("email");
+const emailBar = document.getElementById("emailBar");
+const emailText = document.getElementById("emailText");
+
+email.addEventListener("input", function () {
+
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (this.value == "") {
+        emailBar.style.width = "0%";
+        emailBar.className = "h-2 rounded-full bg-red-500 transition-all duration-300";
+        emailText.innerHTML = "";
+    }
+
+    else if (pattern.test(this.value)) {
+        emailBar.style.width = "100%";
+        emailBar.className = "h-2 rounded-full bg-green-500 transition-all duration-300";
+        emailText.innerHTML = "Valid Email";
+        emailText.className = "text-green-600 text-sm mt-1";
+    }
+
+    else {
+        emailBar.style.width = "40%";
+        emailBar.className = "h-2 rounded-full bg-red-500 transition-all duration-300";
+        emailText.innerHTML = "Invalid Email";
+        emailText.className = "text-red-600 text-sm mt-1";
+    }
+
+});
+
+
+
+const password = document.getElementById("password");
+const passwordBar = document.getElementById("passwordBar");
+const passwordText = document.getElementById("passwordText");
+
+password.addEventListener("input", function () {
+
+    let score = 0;
+    let pass = this.value;
+
+    if (pass.length >= 8) score += 25;
+    if (/[A-Z]/.test(pass)) score += 25;
+    if (/[0-9]/.test(pass)) score += 25;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 25;
+
+    passwordBar.style.width = score + "%";
+
+    if (score <= 25) {
+        passwordBar.className = "h-2 rounded-full bg-red-500 transition-all duration-300";
+        passwordText.innerHTML = "Weak Password";
+        passwordText.className = "text-red-600 text-sm mt-1";
+    }
+
+    else if (score <= 50) {
+        passwordBar.className = "h-2 rounded-full bg-yellow-500 transition-all duration-300";
+        passwordText.innerHTML = "Medium Password";
+        passwordText.className = "text-yellow-600 text-sm mt-1";
+    }
+
+    else if (score <= 75) {
+        passwordBar.className = "h-2 rounded-full bg-blue-500 transition-all duration-300";
+        passwordText.innerHTML = "Good Password";
+        passwordText.className = "text-blue-600 text-sm mt-1";
+    }
+
+    else {
+        passwordBar.className = "h-2 rounded-full bg-green-500 transition-all duration-300";
+        passwordText.innerHTML = "Strong Password";
+        passwordText.className = "text-green-600 text-sm mt-1";
+    }
+
+});
+
+</script>
+{% endblock %}
