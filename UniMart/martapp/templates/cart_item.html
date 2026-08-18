@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="max-w-7xl mx-auto px-4 mt-8 mb-12">
+    <h4 class="text-2xl font-bold text-slate-800 mb-6">Shopping Cart</h4>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- LEFT: Cart Items (col-8) -->
+      <div class="lg:col-span-8 space-y-4">
+        {% if cart.items.exists %}
+          {% for item in cart.items.all %}
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow p-4">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                <!-- Product Image -->
+                <div class="w-full sm:w-24 h-24 flex-shrink-0">
+                  {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-full h-full object-cover rounded-lg" />
+                  {% else %}
+                    <div class="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                      <i class="fa-solid fa-image text-2xl text-gray-300"></i>
+                    </div>
+                  {% endif %}
+                </div>
+
+                <!-- Name + Description + Stock -->
+                <div class="flex-1 min-w-0">
+                  <h2 class="text-base font-semibold text-slate-800 truncate">{{ item.product.name }}</h2>
+                  <p class="text-gray-500 text-sm mt-0.5 line-clamp-1">{{ item.product.description|truncatewords:10 }}</p>
+                  {% if item.product.stock > 0 %}
+                    <span class="inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">In Stock · {{ item.product.stock }}</span>
+                  {% else %}
+                    <span class="inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-100">Out of Stock</span>
+                  {% endif %}
+                </div>
+
+                <!-- Price + Discount Price -->
+                <div class="flex-shrink-0 text-right sm:w-28">
+                  {% if item.product.discount_price %}
+                    <div class="text-gray-400 line-through text-xs">৳{{ item.product.price }}</div>
+                    <div class="text-slate-800 font-bold text-lg">৳{{ item.product.discount_price }}</div>
+                  {% else %}
+                    <div class="text-slate-800 font-bold text-lg">৳{{ item.product.price }}</div>
+                  {% endif %}
+                </div>
+
+                <!-- Trash Icon -->
+                <div class="flex-shrink-0">
+                  <a href="{% url 'cart_remove' item.product.id %}" onclick="return confirm('Are you sure you want to remove this item?')" class="w-9 h-9 flex items-center justify-center rounded-full text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors" title="Remove item"><i class="fa-solid fa-trash"></i></a>
+                </div>
+
+                <!-- Quantity Increase / Decrease -->
+                <div class="flex-shrink-0">
+                  <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                    <a href="{% url 'cart_update' item.product.id %}?quantity={{ item.quantity|add:'-1' }}" class="w-9 h-9 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-slate-600 font-bold text-lg">−</a>
+                    <span class="w-10 h-9 flex items-center justify-center font-semibold text-slate-800 bg-white">{{ item.quantity }}</span>
+                    <a href="{% url 'cart_update' item.product.id %}?quantity={{ item.quantity|add:'1' }}" class="w-9 h-9 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-slate-600 font-bold text-lg">+</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="bg-white rounded-xl shadow-md border border-gray-100 p-10 text-center">
+            <i class="fa-solid fa-cart-shopping text-4xl text-gray-300 mb-3"></i>
+            <p class="text-gray-500">Your cart is empty.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT: Order Summary (col-4) -->
+      <div class="lg:col-span-4">
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 sticky top-5">
+          <h2 class="text-xl font-bold text-slate-800 mb-6">Order Summary</h2>
+
+          <div class="space-y-3">
+            <div class="flex justify-between text-sm text-gray-600">
+              <span>Subtotal</span>
+              <span class="font-medium text-slate-800">৳{{ cart.get_total_price }}</span>
+            </div>
+            <div class="flex justify-between text-sm text-gray-600">
+              <span>Shipping Fee</span>
+              <span class="font-medium text-slate-800">৳{{ shipping_fee }}</span>
+            </div>
+            <div class="flex justify-between text-sm text-gray-600">
+              <span>Tax (2%)</span>
+              <span class="font-medium text-slate-800">৳{{ tax_amount }}</span>
+            </div>
+          </div>
+
+          <hr class="my-5 border-gray-100" />
+
+          <div class="flex justify-between text-lg font-bold text-slate-800">
+            <span>Total</span>
+            <span>৳{{ total_amount }}</span>
+          </div>
+
+          <a href="#" class="block text-center mt-6 w-full bg-yellow-400 text-slate-900 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition-colors">Proceed to Checkout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

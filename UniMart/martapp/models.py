@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import os
+from django.core.validators import MinValueValidator,MaxValueValidator
 # Create your models here.
 
 class Register(models.Model):
@@ -62,8 +63,7 @@ class Product(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='profile')
     image = models.ImageField(upload_to='media/profile_image')
-    phone = models.IntegerField()
-    date_of_birth = models.DateField(null=True, blank=True)
+    phone = models.CharField(max_length=11)
     bio = models.TextField(blank=True,null=True)
     university = models.CharField(max_length=150,blank=True)
     department = models.CharField(max_length=150,blank=True)
@@ -90,6 +90,90 @@ class HeroBanner(models.Model):
 
     def __str__(self):
         return self.title
-    
 
-# class Cart(models.Model):
+class Rating(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='rating')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.SmallIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together =('product','user')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.rating}"
+
+
+
+class Cart(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='cart')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'Cart'
+
+    def __str__(self):
+        return self.user.username
+    def get_total_price(self):
+        return sum(item.get_cost() for item in self.items.all())
+    def get_total_item(self):
+        return sum(item.quantity for item in self.items.all())
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE,related_name='items')
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='cart_item')
+    quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'CartItem'
+    def __str__(self):
+        return self.cart.user.username
+    def get_cost(self):
+        return self.product.price*self.quantity
+
+class Order(models.Model):
+    STATUS_CHOICE = (
+        ('pending','Pending'),
+        ('processing','Processing'),
+        ('shipped','Shipped'),
+        ('deliverd','Deliverd'),
+        ('cancled', 'Cancled')
+    )
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='orders')
+    first_name = models.CharField(max_length=250)
+    last_name = models.CharField(max_length=250,blank=True)
+    email = models.EmailField()
+    address = models.TextField()
+    city = models.CharField(max_length=250)
+    note = models.TextField(blank=True)
+    paid = models.BooleanField(default=False)
+    status = models.CharField(max_length=15,choices=STATUS_CHOICE)
+    transaction_id = models.CharField(max_length=250, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering =[ '-created_at']
+
+    def __str__(self):
+        return f"Order #{self.id}"
+    def get_total_cost(self):
+        return sum(item.get_cost() for item in self.items.all())
+
+class OrderItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='items')
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='order_item')
+    quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'OrderItem'
+    def __str__(self):
+            return self.cart.user.username
+    def get_cost(self):
+            return self.price*self.quantity

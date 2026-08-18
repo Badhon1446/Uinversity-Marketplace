@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="max-w-7xl mx-auto px-4 py-4">
+    <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+      <a href="{% url 'home' %}" class="hover:text-blue-600 transition">Home</a>
+      <span>/</span>
+      <span>{{ products.category.name }}</span>
+      <span>/</span>
+      <span class="text-gray-800 font-medium">{{ products.name }}</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
+      <div class="lg:col-span-8">
+        <div class="bg-gray-50 rounded-xl flex items-center justify-center min-h-[500px]">
+          {% if products.image %}
+            <img src="{{ products.image.url }}" alt="{{ products.name }}" class="max-h-[480px] max-w-full object-contain rounded-xl" />
+          {% else %}
+            <div class="text-gray-400 text-lg">No Image Available</div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="lg:col-span-4 flex flex-col">
+        <h1 class="text-3xl font-bold text-gray-900 leading-tight">{{ products.name }}</h1>
+        <div class="flex items-center gap-2 mt-3">
+          {% if products.rating_set.all %}
+            <div class="text-yellow-400 text-lg">★★★★★</div>
+            <span class="text-sm text-gray-500">Reviews</span>
+          {% else %}
+            <span class="text-sm text-gray-500">No reviews yet</span>
+          {% endif %}
+        </div>
+
+        <div class="border-b border-gray-200 my-5"></div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="font-semibold text-gray-700">Stock:</span>
+          {% if products.stock > 0 %}
+            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">In Stock ({{ products.stock }} available)</span>
+          {% else %}
+            <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-sm font-medium">Out of Stock</span>
+          {% endif %}
+        </div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="font-semibold text-gray-700">Condition:</span>
+          <span class="text-gray-600">{{ products.condition }}</span>
+        </div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="font-semibold text-gray-700">Category:</span>
+
+          <span class="text-gray-600">{{ products.category.name }}</span>
+        </div>
+        <div class="mb-6">
+          <span class="text-3xl font-bold text-blue-600">৳{{ products.price }}</span>
+        </div>
+        <div class="mb-5">
+          <label class="block font-semibold text-gray-700 mb-2">Quantity</label>
+          <div class="flex items-center w-fit border border-gray-300 rounded-lg overflow-hidden">
+            <button type="button" class="w-10 h-10 text-xl hover:bg-gray-100">−</button>
+            <input type="number" value="1" min="1" max="{{ products.stock }}" class="w-16 h-10 text-center border-x border-gray-300 outline-none" />
+            <button type="button" class="w-10 h-10 text-xl hover:bg-gray-100">+</button>
+          </div>
+        </div>
+
+
+        <div class="space-y-3 mt-auto">
+          {% if products.stock > 0 %}
+            <button type="button" class="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">🛒 Add to Cart</button>
+            <button type="button" class="w-full py-3 rounded-lg border-2 border-blue-600 text-blue-600 font-semibold hover:bg-blue-50 transition">⚡ Buy Now</button>
+          {% else %}
+            <button disabled class="w-full py-3 rounded-lg bg-gray-300 text-gray-500 font-semibold cursor-not-allowed">Out of Stock</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Product Description</h2>
+
+      <div class="text-gray-600 leading-7">{{ products.description|linebreaks }}</div>
+    </div>
+
+    <div class="mt-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold text-gray-900">Related Products</h2>
+      </div>
+
+      {% if related_products %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {% for product in related_products|slice:':4' %}
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition">
+              <div class="h-52 bg-gray-50 flex items-center justify-center">
+                {% if product.image %}
+                  <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4" />
+                {% else %}
+                  <span class="text-gray-400">No Image</span>
+                {% endif %}
+              </div>
+              <div class="p-4">
+                <h3 class="font-semibold text-gray-800 line-clamp-2 min-h-[48px]">{{ product.name }}</h3>
+                <p class="text-blue-600 font-bold text-lg mt-2">৳{{ product.price }}</p>
+                <a href="{% url 'product_details' product.slug %}" class="block text-center mt-3 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition">View Product</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="bg-white border rounded-xl p-8 text-center text-gray-500">No related products found.</div>
+      {% endif %}
+    </div>
+
+    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Customer Reviews</h2>
+      </div>
+
+      {% if products.rating_set.all %}
+        <div class="space-y-5">
+          {% for review in products.rating_set.all %}
+            <div class="border-b border-gray-200 pb-5 last:border-0">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-gray-800">{{ review.user.username }}</p>
+
+                  <div class="text-yellow-400 mt-1">
+                    {% for i in 12345 %}
+                      {% if forloop.counter <= review.rating %}
+                        ★
+                      {% else %}
+                        <span class="text-gray-300">★</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+
+                {% if review.created_at %}
+                  <span class="text-sm text-gray-400">{{ review.created_at|date:'d M Y' }}</span>
+                {% endif %}
+              </div>
+
+              {% if review.comment %}
+                <p class="text-gray-600 mt-3 leading-6">{{ review.comment }}</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-8">
+          <div class="text-yellow-400 text-2xl mb-2">★★★★★</div>
+
+          <p class="text-gray-500">No reviews yet for this product.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

@@ -8,8 +8,15 @@ urlpatterns=[
     path('logout/', views.user_logout, name = 'logout'),
 
     path('products_list/', views.productList, name = 'product_list'),
+    path('product_details/<slug:slug>/', views.product_details, name='product_details'),
+    
+    path('cart/', views.cart_details, name='cart'),
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/remove/<int:product_id>/', views.cart_remove, name='cart_remove'),
+    path('cart/update/<int:product_id>/', views.cart_update, name='cart_update'),
 
     path('profile/', views.profile, name='profile'),
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
 
     
 ]
