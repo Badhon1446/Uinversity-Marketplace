@@ -6,6 +6,9 @@ from django.contrib.auth import login as auth_login,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q,Min,Max,Avg
+from .utils import generate_sslcommerz_payment,send_order_confirmation_email
+from django.views.decorators.csrf import csrf_exempt
+
 # Create your views here.
 def user_login(request):
     print(request.method)
@@ -321,6 +324,7 @@ def checkout(request):
 
             for item in cart.items.all():
                 models.OrderItem.objects.create(
+                    user = request.user,
                     order=order,
                     product=item.product,
                     quantity=item.quantity
@@ -328,18 +332,15 @@ def checkout(request):
 
             cart.items.all().delete()
             request.session['order_id'] = order.id
-
-            return redirect('checkout')
+            return redirect('payment_process')
 
     else:
         initial_data = {}
 
         if request.user.first_name:
             initial_data['first_name'] = request.user.first_name
-
         if request.user.last_name:
             initial_data['last_name'] = request.user.last_name
-
         if request.user.email:
             initial_data['email'] = request.user.email
 
@@ -367,10 +368,89 @@ def buy_now(request, product_id):
 
     return redirect('checkout')
 
+@csrf_exempt
 @login_required(login_url='login')
 def payment_process(request):
+
     order_id = request.session.get('order_id')
     if not order_id:
+        messages.error(request,'Order has no id!')
         return redirect('checkout')
-    order_id = get_object_or_404(models.Order, id = order_id)
-    order_data = []
+    
+    order = get_object_or_404(models.Order, id = order_id)
+    payment_data = generate_sslcommerz_payment(order,request)
+
+    if payment_data['status'] == 'SUCCESS':
+        return redirect(payment_data['GatewayPageURL'])
+    else:
+        messages.error(request,'Payment Gateway error.')
+        return redirect('payment_process')
+
+@csrf_exempt
+def payment_success(request,order_id):
+    order = get_object_or_404(models.Order, id = order_id)
+    order.paid = True
+    order.status = 'processing'
+    order.transaction_id = order.id
+    order.save()
+
+    order_item = order.order.all()
+    for item in order_item:
+        product = item.product
+        product.stock -= item.quantity
+
+        if product.stock < 0:
+            product.stock = 0
+        product.save()
+
+    send_order_confirmation_email(order)
+    messages.success(request,"payment successfull!")
+    return render(request,'payment_success.html', {'order': order})
+
+@csrf_exempt
+def payment_fail(request, order_id):
+    order = get_object_or_404(models.Order, id=order_id)
+    order.status = 'canceled'
+    order.save()
+    return redirect('checkout')
+
+@csrf_exempt
+def payment_cencle(request, order_id):
+    order = get_object_or_404(models.Order, id=order_id)
+    order.status = 'canceled'
+    order.save()
+    return redirect('checkout')
+
+@login_required(login_url='login')
+def rate_product(request, product_id):
+    product = get_object_or_404(models.Product, id=product_id)
+    ordered_item = models.OrderItem.objects.filter(
+        order__user = request.user,
+        order__paid = True,
+        product=product
+    )
+
+    if not ordered_item.exists():
+        messages.warning(request,"You can only rate products you habe purchased.")
+        return redirect('product_list')
+    try:
+        rating = models.Rating.objects.get(product=product,user = request.user)
+    except models.Rating.DoesNotExist:
+        rating = None
+
+    if request.method == 'POST':
+        form = RatingForm(request.POST, instance=rating)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.product = product
+            rating.user = request.user
+            rating.save()
+            return redirect('home')
+    else:
+        form = RatingForm(instance=rating)
+
+    return render(request,'home.html',{
+        'form':form,
+        'product' :product
+        })
+        

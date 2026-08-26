@@ -162,7 +162,7 @@ class Order(models.Model):
     def __str__(self):
         return f"Order #{self.id}"
     def get_total_cost(self):
-        return sum(item.get_cost() for item in self.items.all())
+        return sum(item.get_cost() for item in self.order.all())
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name='order')
@@ -175,6 +175,6 @@ class OrderItem(models.Model):
     class Meta:
         db_table = 'OrderItem'
     def __str__(self):
-            return self.cart.user.username
+            return self.user.username
     def get_cost(self):
-            return self.price*self.quantity
+            return self.product.price*self.quantity

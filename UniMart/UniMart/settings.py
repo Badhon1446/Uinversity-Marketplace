@@ -155,3 +155,17 @@ DEBUG = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+
+SSLCOMMERZ_STORE_ID ='unima6a8e613892f33'
+SSLCOMMERZ_STORE_PASSWORD='ECiMjpbTDHdX' 
+SSLCOMMERZ_PAYMENT_URL ='https://sandbox.sslcommerz.com/gwprocess/v4/api.php'
+SSLCOMMERZ_VALIDATION_URL ='https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php'
+
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "bkhan256048@gmail.com"
+EMAIL_HOST_PASSWORD = "axufnpfpjgormbzq"
