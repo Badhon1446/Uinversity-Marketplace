@@ -62,8 +62,8 @@ class Product(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='profile')
-    image = models.ImageField(upload_to='media/profile_image')
-    phone = models.CharField(max_length=11)
+    image = models.ImageField(upload_to='media/profile_image',blank=True,null=True)
+    phone = models.CharField(max_length=11,blank=True,null=True)
     bio = models.TextField(blank=True,null=True)
     university = models.CharField(max_length=150,blank=True)
     department = models.CharField(max_length=150,blank=True)
@@ -118,7 +118,7 @@ class Cart(models.Model):
         return self.user.username
     def get_total_price(self):
         return sum(item.get_cost() for item in self.items.all())
-    def get_total_item(self):
+    def get_total_items(self):
         return sum(item.quantity for item in self.items.all())
 
 class CartItem(models.Model):
@@ -165,6 +165,7 @@ class Order(models.Model):
         return sum(item.get_cost() for item in self.items.all())
 
 class OrderItem(models.Model):
+    order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name='order')
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='items')
     product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='order_item')
     quantity = models.PositiveIntegerField(default=1)

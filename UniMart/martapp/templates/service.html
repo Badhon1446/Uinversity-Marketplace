@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Our Services | UniMart
+{% endblock %}
+
+{% block content %}
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <span class="inline-block px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold mb-4">Why Choose UniMart?</span>
+
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-5">Services We Provide</h1>
+
+        <p class="max-w-2xl mx-auto text-gray-600 text-lg">UniMart is a student-focused marketplace where university students can buy and sell products easily, safely, and affordably.</p>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Service 1 -->
+        <div class="bg-white rounded-2xl p-7 shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 hover:-translate-y-1">
+          <div class="w-14 h-14 flex items-center justify-center bg-blue-100 text-blue-600 rounded-xl mb-6 text-2xl">⚡</div>
+
+          <h2 class="text-xl font-bold text-gray-900 mb-3">Fast Delivery</h2>
+
+          <p class="text-gray-600 leading-relaxed">Get your purchased products delivered quickly and conveniently. We aim to make the delivery process simple and efficient for university students.</p>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="bg-white rounded-2xl p-7 shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 hover:-translate-y-1">
+          <div class="w-14 h-14 flex items-center justify-center bg-purple-100 text-purple-600 rounded-xl mb-6 text-2xl">🎓</div>
+
+          <h2 class="text-xl font-bold text-gray-900 mb-3">Student Marketplace</h2>
+
+          <p class="text-gray-600 leading-relaxed">Students from different universities can connect with each other and buy or sell useful products through one platform.</p>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="bg-white rounded-2xl p-7 shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 hover:-translate-y-1">
+          <div class="w-14 h-14 flex items-center justify-center bg-green-100 text-green-600 rounded-xl mb-6 text-2xl">💰</div>
+
+          <h2 class="text-xl font-bold text-gray-900 mb-3">Affordable Products</h2>
+
+          <p class="text-gray-600 leading-relaxed">Find useful new and pre-owned products at student-friendly prices, helping you save money while getting what you need.</p>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="bg-white rounded-2xl p-7 shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 hover:-translate-y-1">
+          <div class="w-14 h-14 flex items-center justify-center bg-orange-100 text-orange-600 rounded-xl mb-6 text-2xl">🔄</div>
+
+          <h2 class="text-xl font-bold text-gray-900 mb-3">Buy & Sell Easily</h2>
+
+          <p class="text-gray-600 leading-relaxed">Have something you no longer need? List it on UniMart and connect with students who may be interested in buying it.</p>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="mt-20">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How UniMart Works</h2>
+
+          <p class="text-gray-600 max-w-xl mx-auto">Buying and selling products with UniMart is simple and easy.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Step 1 -->
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto flex items-center justify-center bg-blue-600 text-white rounded-full text-xl font-bold mb-5">01</div>
+
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Find a Product</h3>
+
+            <p class="text-gray-600">Browse products from students and find exactly what you are looking for.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto flex items-center justify-center bg-blue-600 text-white rounded-full text-xl font-bold mb-5">02</div>
+
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Place Your Order</h3>
+
+            <p class="text-gray-600">Choose your desired product and place your order through our simple checkout process.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto flex items-center justify-center bg-blue-600 text-white rounded-full text-xl font-bold mb-5">03</div>
+
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Get Your Product</h3>
+
+            <p class="text-gray-600">Receive your product through our fast and convenient delivery service.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-20 bg-blue-600 rounded-3xl px-6 py-12 md:px-12 text-center text-white">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Start with UniMart?</h2>
+
+        <p class="text-blue-100 max-w-2xl mx-auto mb-8">Discover affordable products, connect with students, and start buying or selling today.</p>
+
+        <a href="{% url 'product_list' %}" class="inline-block bg-white text-blue-600 px-7 py-3 rounded-xl font-semiboldhover:bg-gray-100 transition duration-300">Explore Products</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}

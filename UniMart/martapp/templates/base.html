@@ -14,7 +14,7 @@
   </head>
 
   <body class="bg-gray-100 flex flex-col min-h-screen">
-    <nav class="bg-slate-800 text-white shadow-md">
+    <nav class="bg-amber-500 text-white shadow-md">
       <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
         <a href="{% url 'home' %}" class="text-2xl font-bold tracking-wide">UniMart</a>
         <ul class="hidden md:flex items-center gap-4 font-medium">
@@ -25,22 +25,27 @@
             <a href="{% url 'product_list' %}" class="hover:text-yellow-400 duration-300">Product List</a>
           </li>
 
-          <!--    <li>
+          <!--        <li>
           <a href="#" class="hover:text-yellow-400 duration-300">About</a>
-        </li>    -->
+        </li>        -->
 
           <li>
-            <a href="#" class="hover:text-yellow-400 duration-300">Services</a>
+            <a href="{% url 'services' %}" class="hover:text-yellow-400 duration-300">Services</a>
           </li>
         </ul>
 
         <div class="flex items-center gap-3">
           {% if user.is_authenticated %}
-            <a href="{% url 'cart' %}" class="relative p-3 rounded-full hover:bg-slate-700 transition" title="Shopping Cart"><i class="fa-solid fa-cart-shopping text-xl"></i>
+            <a href="{% url 'cart' %}" class="relative p-3 rounded-full hover:bg-yellow-500 transition" title="Shopping Cart">
+              <i class="fa-solid fa-cart-shopping text-xl"></i>
+
+              {% if cart_items_count > 0 %}
+                <span class="absolute -top-1 -right-1 bg-white text-amber-500 text-xs font-bold rounded-full min-w-5 h-5 flex items-center justify-center px-1">{{ cart_items_count }}</span>
+              {% endif %}
             </a>
 
             <div class="relative group">
-              <button class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-slate-700 transition">
+              <button class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-amber-500 transition">
                 {% if request.user.profile.image %}
                   <img src="{{ request.user.profile.image.url }}" alt="Profile" class="w-10 h-10 rounded-full object-cover" />
                 {% else %}
@@ -50,13 +55,13 @@
                 <i class="fa-solid fa-chevron-down text-sm"></i>
               </button>
 
-              <div class="absolute right-0 w-47 bg-indigo-950 rounded-lg shadow-lg opacity-10 invisible group-hover:opacity-100 group-hover:visible transition duration-300 z-50">
-                <a href="{% url 'profile' %}" class="block px-4 py-3 hover:bg-indigo-700">
+              <div class="absolute right-0 w-47 bg-amber-500 rounded-lg shadow-lg opacity-0 invisible -translate-y-4 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-700 z-50">
+                <a href="{% url 'profile' %}" class="block px-4 py-3 hover:bg-amber-600">
                   <i class="fa-regular fa-user mr-2"></i>
                   View Profile
                 </a>
 
-                <a href="{% url 'edit_profile' %}" class="block px-4 py-3 hover:bg-indigo-700">
+                <a href="{% url 'edit_profile' %}" class="block px-4 py-3 hover:bg-amber-600">
                   <i class="fa-solid fa-user-pen mr-2"></i>
                   Edit Profile
                 </a>
@@ -72,14 +77,14 @@
                 </a>
               </div>
 
-              <!--    <div
+              <!--        <div
             class="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
             <a href="{% url 'profile' %} class=" block px-5 py-3 text-gray-700 hover:bg-gray-100">My Profile</a>
 
             <a href="#" class="block px-5 py-3 text-gray-700 hover:bg-gray-100">Update Profile</a>
             <hr />
             <a href="{% url 'logout' %}" class="block px-5 py-3 text-red-600 hover:bg-red-50">Logout</a>
-          </div>    -->
+          </div>        -->
             </div>
           {% else %}
             <a href="{% url 'login' %}" class="px-5 py-2 rounded-md border border-white hover:bg-white hover:text-slate-800 duration-300">Login</a>
@@ -102,43 +107,21 @@
                     {% if message.tags == 'success' %}
               
               
-              
-              
-                        bg-green-500
-
-
-
+                    bg-green-500
 
             {% elif message.tags == 'error' %}
               
-              
-              
-              
-              
-                        bg-red-500
-
-
-
+                 bg-red-500
 
 
             {% elif message.tags == 'warning' %}
               
-              
-              
-                            
-                        bg-yellow-500 text-black
-
-
+              bg-yellow-500 text-black
 
 
             {% else %}
               
-              
-              
-                            
-                        bg-blue-500
-
-
+               bg-blue-500
 
 
             {% endif %}">{{ message }}</div>
@@ -171,7 +154,7 @@
               <a href="#" class="hover:text-indigo-400 transition">About Us</a>
             </li>
             <li>
-              <a href="#" class="hover:text-indigo-400 transition">Products</a>
+              <a href="{% url 'product_list' %}" class="hover:text-indigo-400 transition">Products</a>
             </li>
             <li>
               <a href="#" class="hover:text-indigo-400 transition">Contact</a>
@@ -231,7 +214,7 @@
             // Smooth fade + slide
             msg.classList.add('opacity-0', 'translate-x-10')
       
-            // Animation শেষ হলে remove
+            // Animation remove
             setTimeout(function () {
               msg.remove()
             }, 500)

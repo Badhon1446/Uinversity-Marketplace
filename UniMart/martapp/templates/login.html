@@ -1,37 +1,36 @@
 {% extends 'base.html' %}
+{% load socialaccount %}
 {% block content %}
+  <div class="max-w-md mx-auto my-20 bg-white shadow-lg rounded-xl p-8">
+    <h2 class="text-3xl font-bold text-center text-slate-800 mb-8">Login</h2>
 
-<div class="max-w-md mx-auto my-20 bg-white shadow-lg rounded-xl p-8">
-  <h2 class="text-3xl font-bold text-center text-slate-800 mb-8">
-    Login
-  </h2>
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
 
-  <form method="POST" class="space-y-6">
-    {% csrf_token %}
+      <div>
+        <label class="block mb-2 font-medium">Email</label>
+        <input type="text" name="email" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+      </div>
 
-    <div>
-      <label class="block mb-2 font-medium">Email</label>
-      <input type="text" name="email" required
-        class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500">
-    </div>
+      <div>
+        <label class="block mb-2 font-medium">Password</label>
+        <input type="password" name="password" required class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500" />
+      </div>
 
-    <div>
-      <label class="block mb-2 font-medium">Password</label>
-      <input type="password" name="password" required
-        class="w-full border rounded-lg px-4 py-3 outline-none focus:border-blue-500">
-    </div>
+      <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-semibold duration-300">Login</button>
 
-    <button type="submit"
-      class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-semibold duration-300">
-      Login
-    </button>
+      <div class="mt-4">
+        <a href="{% provider_login_url 'google' next=request.GET.next %}" class="flex items-center justify-center gap-3 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+          <i class="fa-brands fa-google text-lg"></i>
 
-    <p class="text-center">
-      Don't have an account?
-      <a href="{% url 'register' %}" class="text-blue-600 hover:underline">
-        Register
-      </a>
-    </p>
-  </form>
-</div>
+          <span>Continue with Google</span>
+        </a>
+      </div>
+
+      <p class="text-center">
+        Don't have an account?
+        <a href="{% url 'register' %}" class="text-blue-600 hover:underline">Register</a>
+      </p>
+    </form>
+  </div>
 {% endblock %}

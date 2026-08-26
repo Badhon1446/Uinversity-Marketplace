@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from . import models
-from .form import RatingForm
+from .form import RatingForm,CheckOutForm
 from .models import User
 from django.contrib.auth import login as auth_login,logout
 from django.contrib import messages
@@ -79,8 +79,7 @@ def home(request):
         'categories':categorys,
         'banners':banners,
         
-    }
-    
+    }  
     
     return render(request,'home.html',contex)
 
@@ -133,12 +132,12 @@ def edit_profile(request):
         profile.save()
         user.save()
 
-    contex = {
+    context = {
         'profile':profile,
         'user':user
     }
 
-    return render(request,'user/edit_profile.html',contex)
+    return render(request,'user/edit_profile.html',context)
 
 
 def productList(request):
@@ -151,7 +150,7 @@ def productList(request):
     categorys = models.Category.objects.all().order_by('-id')
 
     if categoryQ:
-        products = products.filter(category__name = categoryQ)
+        products = products.filter(Q(category__slug=categoryQ) | Q(category__name__iexact=categoryQ))
     if conditionQ:
         products = products.filter(condition = conditionQ)
     if searchQ:
@@ -182,6 +181,8 @@ def productList(request):
     }
 
     return render(request,'product_list.html',contex)
+
+
 @login_required(login_url='login')
 def product_details(request,slug):
 
@@ -260,7 +261,7 @@ def add_to_cart(request,product_id):
 
         cart_item = models.CartItem.objects.create(cart=cart,product=product,quantity=1)
     messages.info(request, f"{product.name} has been added to your cart!")
-    return redirect('cart')
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 @login_required(login_url='login')
 def cart_remove(request,product_id):
@@ -294,4 +295,82 @@ def cart_update(request,product_id):
 
     return redirect('cart')
 
-    
+@login_required(login_url='login')
+def checkout(request):
+    try:
+        cart = models.Cart.objects.get(user=request.user)
+        if not cart.items.exists():
+            messages.warning(request, 'Your cart is empty!')
+            return redirect('cart')
+    except models.Cart.DoesNotExist:
+        messages.warning(request, 'your cart is empty!')
+        return redirect('cart')
+
+    subtotal = cart.get_total_price()
+    shipping_fee = 60
+    tax_amount = round(subtotal * 0.02, 2)
+    total_amount = round(subtotal + shipping_fee + tax_amount, 2)
+
+    if request.method == 'POST':
+        form = CheckOutForm(request.POST)
+
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
+
+            for item in cart.items.all():
+                models.OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    quantity=item.quantity
+                )
+
+            cart.items.all().delete()
+            request.session['order_id'] = order.id
+
+            return redirect('checkout')
+
+    else:
+        initial_data = {}
+
+        if request.user.first_name:
+            initial_data['first_name'] = request.user.first_name
+
+        if request.user.last_name:
+            initial_data['last_name'] = request.user.last_name
+
+        if request.user.email:
+            initial_data['email'] = request.user.email
+
+        form = CheckOutForm(initial=initial_data)
+
+    return render(request, 'checkout.html', {
+        'cart': cart,
+        'form': form,
+        'subtotal': subtotal,
+        'shipping_fee': shipping_fee,
+        'tax_amount': tax_amount,
+        'total_amount': total_amount
+    })
+
+@login_required(login_url='login')
+def buy_now(request, product_id):
+    product = get_object_or_404(models.Product, id=product_id)
+
+    cart, created = models.Cart.objects.get_or_create(user=request.user)
+    item, created = models.CartItem.objects.get_or_create( cart=cart, product=product)
+
+    if not created:
+        item.quantity += 1
+        item.save()
+
+    return redirect('checkout')
+
+@login_required(login_url='login')
+def payment_process(request):
+    order_id = request.session.get('order_id')
+    if not order_id:
+        return redirect('checkout')
+    order_id = get_object_or_404(models.Order, id = order_id)
+    order_data = []

@@ -1,4 +1,13 @@
 {% extends 'base.html' %}
+{% load socialaccount %}
+
+<div class="mt-4">
+  <a href="{% provider_login_url 'google' %}" class="flex items-center justify-center gap-3 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+    <i class="fa-brands fa-google text-lg"></i>
+
+    <span>Continue with Google</span>
+  </a>
+</div>
 {% block content %}
   <div class="max-w-md mx-auto my-16 bg-white shadow-lg rounded-xl p-8">
     <h2 class="text-3xl font-bold text-center text-slate-800 mb-8">Create Account</h2>
@@ -69,83 +78,78 @@
         <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a>
       </p>
     </form>
+
+    <div class="flex items-center gap-3 my-4">
+      <div class="flex-1 border-t border-gray-300"></div>
+      <span class="text-gray-500 text-sm">OR</span>
+      <div class="flex-1 border-t border-gray-300"></div>
+    </div>
+    <div class="mt-4">
+      <a href="{% provider_login_url 'google' %}" class="flex items-center justify-center gap-3 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+        <i class="fa-brands fa-google text-lg"></i>
+
+        <span>Continue with Google</span>
+      </a>
+    </div>
   </div>
-  
+
   <script>
-
-const email = document.getElementById("email");
-const emailBar = document.getElementById("emailBar");
-const emailText = document.getElementById("emailText");
-
-email.addEventListener("input", function () {
-
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (this.value == "") {
-        emailBar.style.width = "0%";
-        emailBar.className = "h-2 rounded-full bg-red-500 transition-all duration-300";
-        emailText.innerHTML = "";
-    }
-
-    else if (pattern.test(this.value)) {
-        emailBar.style.width = "100%";
-        emailBar.className = "h-2 rounded-full bg-green-500 transition-all duration-300";
-        emailText.innerHTML = "Valid Email";
-        emailText.className = "text-green-600 text-sm mt-1";
-    }
-
-    else {
-        emailBar.style.width = "40%";
-        emailBar.className = "h-2 rounded-full bg-red-500 transition-all duration-300";
-        emailText.innerHTML = "Invalid Email";
-        emailText.className = "text-red-600 text-sm mt-1";
-    }
-
-});
-
-
-
-const password = document.getElementById("password");
-const passwordBar = document.getElementById("passwordBar");
-const passwordText = document.getElementById("passwordText");
-
-password.addEventListener("input", function () {
-
-    let score = 0;
-    let pass = this.value;
-
-    if (pass.length >= 8) score += 25;
-    if (/[A-Z]/.test(pass)) score += 25;
-    if (/[0-9]/.test(pass)) score += 25;
-    if (/[^A-Za-z0-9]/.test(pass)) score += 25;
-
-    passwordBar.style.width = score + "%";
-
-    if (score <= 25) {
-        passwordBar.className = "h-2 rounded-full bg-red-500 transition-all duration-300";
-        passwordText.innerHTML = "Weak Password";
-        passwordText.className = "text-red-600 text-sm mt-1";
-    }
-
-    else if (score <= 50) {
-        passwordBar.className = "h-2 rounded-full bg-yellow-500 transition-all duration-300";
-        passwordText.innerHTML = "Medium Password";
-        passwordText.className = "text-yellow-600 text-sm mt-1";
-    }
-
-    else if (score <= 75) {
-        passwordBar.className = "h-2 rounded-full bg-blue-500 transition-all duration-300";
-        passwordText.innerHTML = "Good Password";
-        passwordText.className = "text-blue-600 text-sm mt-1";
-    }
-
-    else {
-        passwordBar.className = "h-2 rounded-full bg-green-500 transition-all duration-300";
-        passwordText.innerHTML = "Strong Password";
-        passwordText.className = "text-green-600 text-sm mt-1";
-    }
-
-});
-
-</script>
+    const email = document.getElementById('email')
+    const emailBar = document.getElementById('emailBar')
+    const emailText = document.getElementById('emailText')
+    
+    email.addEventListener('input', function () {
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    
+      if (this.value == '') {
+        emailBar.style.width = '0%'
+        emailBar.className = 'h-2 rounded-full bg-red-500 transition-all duration-300'
+        emailText.innerHTML = ''
+      } else if (pattern.test(this.value)) {
+        emailBar.style.width = '100%'
+        emailBar.className = 'h-2 rounded-full bg-green-500 transition-all duration-300'
+        emailText.innerHTML = 'Valid Email'
+        emailText.className = 'text-green-600 text-sm mt-1'
+      } else {
+        emailBar.style.width = '40%'
+        emailBar.className = 'h-2 rounded-full bg-red-500 transition-all duration-300'
+        emailText.innerHTML = 'Invalid Email'
+        emailText.className = 'text-red-600 text-sm mt-1'
+      }
+    })
+    
+    const password = document.getElementById('password')
+    const passwordBar = document.getElementById('passwordBar')
+    const passwordText = document.getElementById('passwordText')
+    
+    password.addEventListener('input', function () {
+      let score = 0
+      let pass = this.value
+    
+      if (pass.length >= 8) score += 25
+      if (/[A-Z]/.test(pass)) score += 25
+      if (/[0-9]/.test(pass)) score += 25
+      if (/[^A-Za-z0-9]/.test(pass)) score += 25
+    
+      passwordBar.style.width = score + '%'
+    
+      if (score <= 25) {
+        passwordBar.className = 'h-2 rounded-full bg-red-500 transition-all duration-300'
+        passwordText.innerHTML = 'Weak Password'
+        passwordText.className = 'text-red-600 text-sm mt-1'
+      } else if (score <= 50) {
+        passwordBar.className = 'h-2 rounded-full bg-yellow-500 transition-all duration-300'
+        passwordText.innerHTML = 'Medium Password'
+        passwordText.className = 'text-yellow-600 text-sm mt-1'
+      } else if (score <= 75) {
+        passwordBar.className = 'h-2 rounded-full bg-blue-500 transition-all duration-300'
+        passwordText.innerHTML = 'Good Password'
+        passwordText.className = 'text-blue-600 text-sm mt-1'
+      } else {
+        passwordBar.className = 'h-2 rounded-full bg-green-500 transition-all duration-300'
+        passwordText.innerHTML = 'Strong Password'
+        passwordText.className = 'text-green-600 text-sm mt-1'
+      }
+    })
+  </script>
 {% endblock %}

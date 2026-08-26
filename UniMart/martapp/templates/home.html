@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <section class="max-w-7xl mx-auto px-6 py-4">
-    <div class="max-w-4xl mx-auto px-4">
+  <section class="max-w-7xl mx-auto px-4 py-2">
+    <div class="max-w-4xl mx-auto px-4 py-2">
       <form method="GET" action="{% url 'product_list' %}">
       <div class="flex flex-col sm:flex-row items-stretch bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
         <div class="flex-1 flex items-center">
@@ -48,13 +48,18 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {% for category in categories %}
-        <a href="#{% comment %}{% url 'product_list' %}?category={{ category.slug }}{% endcomment %}" class="bg-white rounded-xl shadow-md p-8 text-center hover:-translate-y-2 duration-300">
+        <a href="{% url 'product_list' %}?category={{ category.slug }}" class="bg-white rounded-xl shadow-md p-8 text-center hover:-translate-y-2 duration-300">
           <img src="{{ category.image.url }}" alt="{{ product.name }}" class="w-full h-52 object-cover" />
           <h3 class="text-xl font-bold mb-3">{{ category.name }}</h3>
-          {% comment %} <p class="text-gray-600">{{ category.product_set.count }} Products</p> {% endcomment %}
+          <p class="text-gray-600">{{ category.product_set.count }} Products</p>
         </a>
       {% endfor %}
     </div>
+
+    <div class="text-center p-2 mt-2">
+      <h3 class="text-3xl font-bold text-slate-800 mb-3">For You</h3>
+    </div>
+
 
     <div class="text-center p-2 mt-2">
       <h3 class="text-3xl font-bold text-slate-800 mb-3">Featured Products</h3>
@@ -67,7 +72,7 @@
 
           <div class="absolute top-0 left-0 w-full h-52 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300">
             <div class="absolute bottom-4 left-4 flex items-center gap-3">
-              <a href="#" class="bg-lime-500 text-white px-5 py-2 rounded-lg hover:bg-emerald-700 translate-y-6 group-hover:translate-y-0 transition duration-300">Buy Now</a>
+              <a href="{% url 'buy_now' product.id %}" class="bg-lime-500 text-white px-5 py-2 rounded-lg hover:bg-emerald-700 translate-y-6 group-hover:translate-y-0 transition duration-300">Buy Now</a>
             </div>
             <div class="absolute bottom-4 right-4 flex items-center gap-3">
               <a href=" {% url 'add_to_cart' product.id %} " class="bg-white text-indigo-600 p-3 rounded-full hover:bg-indigo-600 hover:text-white translate-y-6 group-hover:translate-y-0 transition duration-300"><i class="fa-solid fa-cart-shopping gap-2"></i></a>

@@ -50,22 +50,21 @@
           <span class="text-gray-600">{{ products.category.name }}</span>
         </div>
         <div class="mb-6">
-          <span class="text-3xl font-bold text-blue-600">৳{{ products.price }}</span>
+          <span class="text-3xl font-bold text-orange-400">৳{{ products.price }}</span>
         </div>
         <div class="mb-5">
           <label class="block font-semibold text-gray-700 mb-2">Quantity</label>
           <div class="flex items-center w-fit border border-gray-300 rounded-lg overflow-hidden">
-            <button type="button" class="w-10 h-10 text-xl hover:bg-gray-100">−</button>
-            <input type="number" value="1" min="1" max="{{ products.stock }}" class="w-16 h-10 text-center border-x border-gray-300 outline-none" />
-            <button type="button" class="w-10 h-10 text-xl hover:bg-gray-100">+</button>
+            {% comment %} <button type="button" id="decreaseQty" class="w-10 h-10 text-xl hover:bg-gray-100">−</button> {% endcomment %}
+            <input type="number" id="quantity" value="1" min="1" max="{{ products.stock }}" class="w-20 h-10 text-center border-x border-gray-300 outline-none" />
+            {% comment %} <button type="button" id="increaseQty" class="w-10 h-10 text-xl hover:bg-gray-100">+</button> {% endcomment %}
           </div>
         </div>
 
-
         <div class="space-y-3 mt-auto">
           {% if products.stock > 0 %}
-            <button type="button" class="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">🛒 Add to Cart</button>
-            <button type="button" class="w-full py-3 rounded-lg border-2 border-blue-600 text-blue-600 font-semibold hover:bg-blue-50 transition">⚡ Buy Now</button>
+            <a href="{% url 'add_to_cart' products.id %}" class="block text-center w-full py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-800 transition">Add to Cart</a>
+            <a href="{% url 'checkout' %}" class="block text-center w-full py-3 rounded-lg border-2 border-green-600 text-black font-semibold hover:bg-green-50 transition">Buy Now</a>
           {% else %}
             <button disabled class="w-full py-3 rounded-lg bg-gray-300 text-gray-500 font-semibold cursor-not-allowed">Out of Stock</button>
           {% endif %}
@@ -97,8 +96,8 @@
               </div>
               <div class="p-4">
                 <h3 class="font-semibold text-gray-800 line-clamp-2 min-h-[48px]">{{ product.name }}</h3>
-                <p class="text-blue-600 font-bold text-lg mt-2">৳{{ product.price }}</p>
-                <a href="{% url 'product_details' product.slug %}" class="block text-center mt-3 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition">View Product</a>
+                <p class="text-orange-400 font-bold text-lg mt-2">৳{{ product.price }}</p>
+                <a href="{% url 'product_details' product.slug %}" class="block text-center mt-3 py-2 rounded-lg bg-green-600 border border-green-600 text-white hover:bg-green-800 hover:text-white transition">View Product</a>
               </div>
             </div>
           {% endfor %}
