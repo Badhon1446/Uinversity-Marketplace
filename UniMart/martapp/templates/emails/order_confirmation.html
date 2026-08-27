@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+</head>
+
+<body style="margin:0; padding:0; background:#f4f4f4; font-family:Arial, sans-serif;">
+
+    <div style="max-width:600px; margin:40px auto; background:#ffffff; padding:30px; border-radius:10px;">
+
+        <h2 style="color:#16a34a; text-align:center;">
+            Order Confirmed! ✓
+        </h2>
+
+        <p>Hello {{ order.user.first_name }},</p>
+
+        <p>
+            Your order <strong>#{{ order.id }}</strong>
+            has been successfully placed.
+        </p>
+
+        <p>
+            Total Amount:
+            <strong>{{ order.get_total_cost }} Tk</strong>
+        </p>
+
+        <p style="margin-top:30px;">
+            Thank you for shopping with us!
+        </p>
+
+    </div>
+
+</body>
+</html>

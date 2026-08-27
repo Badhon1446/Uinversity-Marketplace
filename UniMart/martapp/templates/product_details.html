@@ -1,39 +1,53 @@
 {% extends 'base.html' %}
-
 {% block content %}
-  <div class="max-w-7xl mx-auto px-4 py-4">
-    <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
-      <a href="{% url 'home' %}" class="hover:text-blue-600 transition">Home</a>
+  <div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="flex items-center gap-2 text-sm text-gray-500 mb-5">
+      <a href="{% url 'home' %}" class="hover:text-green-600 transition">Home</a>
       <span>/</span>
       <span>{{ products.category.name }}</span>
       <span>/</span>
       <span class="text-gray-800 font-medium">{{ products.name }}</span>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
-      <div class="lg:col-span-8">
-        <div class="bg-gray-50 rounded-xl flex items-center justify-center min-h-[500px]">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+      <div class="lg:col-span-7">
+        <div class="bg-gray-50 rounded-2xl min-h-[520px] flex items-center justify-center overflow-hidden">
           {% if products.image %}
-            <img src="{{ products.image.url }}" alt="{{ products.name }}" class="max-h-[480px] max-w-full object-contain rounded-xl" />
+            <img src="{{ products.image.url }}" alt="{{ products.name }}" class="max-h-[500px] max-w-full object-contain rounded-xl hover:scale-105 transition duration-300" />
           {% else %}
             <div class="text-gray-400 text-lg">No Image Available</div>
           {% endif %}
         </div>
       </div>
-      <div class="lg:col-span-4 flex flex-col">
+      <div class="lg:col-span-5 flex flex-col">
         <h1 class="text-3xl font-bold text-gray-900 leading-tight">{{ products.name }}</h1>
-        <div class="flex items-center gap-2 mt-3">
-          {% if products.rating_set.all %}
-            <div class="text-yellow-400 text-lg">★★★★★</div>
-            <span class="text-sm text-gray-500">Reviews</span>
+        <div class="flex items-center gap-3 mt-4">
+          {% if products.rating.all %}
+            <div class="flex items-center text-yellow-400 text-lg">
+              {% for i in '12345' %}
+                {% if forloop.counter <= products.rating.all.0.rating %}
+                  ★
+                {% else %}
+                  <span class="text-gray-300">★</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <span class="text-sm text-gray-500">{{ products.rating.count }} Reviews</span>
           {% else %}
             <span class="text-sm text-gray-500">No reviews yet</span>
           {% endif %}
         </div>
+        <div class="border-b border-gray-200 my-6"></div>
+        <div class="mb-6">
+          <p class="text-sm text-gray-500 mb-1">Price</p>
 
-        <div class="border-b border-gray-200 my-5"></div>
+          <span class="text-4xl font-bold text-orange-400">৳{{ products.price }}</span>
+        </div>
+
+        <!-- Stock -->
         <div class="flex items-center gap-3 mb-4">
           <span class="font-semibold text-gray-700">Stock:</span>
+
           {% if products.stock > 0 %}
             <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">In Stock ({{ products.stock }} available)</span>
           {% else %}
@@ -44,98 +58,66 @@
           <span class="font-semibold text-gray-700">Condition:</span>
           <span class="text-gray-600">{{ products.condition }}</span>
         </div>
-        <div class="flex items-center gap-3 mb-4">
+        <div class="flex items-center gap-3 mb-6">
           <span class="font-semibold text-gray-700">Category:</span>
 
           <span class="text-gray-600">{{ products.category.name }}</span>
         </div>
-        <div class="mb-6">
-          <span class="text-3xl font-bold text-orange-400">৳{{ products.price }}</span>
-        </div>
-        <div class="mb-5">
-          <label class="block font-semibold text-gray-700 mb-2">Quantity</label>
-          <div class="flex items-center w-fit border border-gray-300 rounded-lg overflow-hidden">
-            {% comment %} <button type="button" id="decreaseQty" class="w-10 h-10 text-xl hover:bg-gray-100">−</button> {% endcomment %}
-            <input type="number" id="quantity" value="1" min="1" max="{{ products.stock }}" class="w-20 h-10 text-center border-x border-gray-300 outline-none" />
-            {% comment %} <button type="button" id="increaseQty" class="w-10 h-10 text-xl hover:bg-gray-100">+</button> {% endcomment %}
-          </div>
-        </div>
+        {% if products.stock > 0 %}
+          <div class="mb-6">
+            <label for="quantity" class="block font-semibold text-gray-700 mb-2">Quantity</label>
 
+            <div class="flex items-center w-fit border border-gray-300 rounded-lg overflow-hidden">
+              <input type="number" id="quantity" value="1" min="1" max="{{ products.stock }}" class="w-20 h-11 text-center outline-none border-x border-gray-300" />
+            </div>
+          </div>
+        {% endif %}
         <div class="space-y-3 mt-auto">
           {% if products.stock > 0 %}
-            <a href="{% url 'add_to_cart' products.id %}" class="block text-center w-full py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-800 transition">Add to Cart</a>
-            <a href="{% url 'checkout' %}" class="block text-center w-full py-3 rounded-lg border-2 border-green-600 text-black font-semibold hover:bg-green-50 transition">Buy Now</a>
+            <a href="{% url 'add_to_cart' products.id %}" class="block w-full text-center py-3.5 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition duration-200">Add to Cart</a>
+
+            <a href="{% url 'cart' %}" class="block w-full text-center py-3.5 rounded-xl border-2 border-green-600 text-gray-800 font-semibold hover:bg-green-50 transition duration-200">View Cart</a>
           {% else %}
-            <button disabled class="w-full py-3 rounded-lg bg-gray-300 text-gray-500 font-semibold cursor-not-allowed">Out of Stock</button>
+            <button disabled class="w-full py-3.5 rounded-xl bg-gray-300 text-gray-500 font-semibold cursor-not-allowed">Out of Stock</button>
           {% endif %}
         </div>
       </div>
     </div>
-
     <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
       <h2 class="text-2xl font-bold text-gray-900 mb-4">Product Description</h2>
 
       <div class="text-gray-600 leading-7">{{ products.description|linebreaks }}</div>
     </div>
-
-    <div class="mt-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold text-gray-900">Related Products</h2>
-      </div>
-
-      {% if related_products %}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {% for product in related_products|slice:':4' %}
-            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition">
-              <div class="h-52 bg-gray-50 flex items-center justify-center">
-                {% if product.image %}
-                  <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4" />
-                {% else %}
-                  <span class="text-gray-400">No Image</span>
-                {% endif %}
-              </div>
-              <div class="p-4">
-                <h3 class="font-semibold text-gray-800 line-clamp-2 min-h-[48px]">{{ product.name }}</h3>
-                <p class="text-orange-400 font-bold text-lg mt-2">৳{{ product.price }}</p>
-                <a href="{% url 'product_details' product.slug %}" class="block text-center mt-3 py-2 rounded-lg bg-green-600 border border-green-600 text-white hover:bg-green-800 hover:text-white transition">View Product</a>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <div class="bg-white border rounded-xl p-8 text-center text-gray-500">No related products found.</div>
-      {% endif %}
-    </div>
-
     <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Customer Reviews</h2>
+
+        {% if products.rating.all %}
+          <span class="text-sm text-gray-500">{{ products.rating.count }} Reviews</span>
+        {% endif %}
       </div>
 
-      {% if products.rating_set.all %}
-        <div class="space-y-5">
-          {% for review in products.rating_set.all %}
-            <div class="border-b border-gray-200 pb-5 last:border-0">
-              <div class="flex items-center justify-between">
+      {% if products.rating.all %}
+        <div class="space-y-6">
+          {% for review in products.rating.all %}
+            <div class="pb-6 border-b border-gray-200 last:border-0 last:pb-0">
+              <div class="flex items-start justify-between gap-4">
                 <div>
                   <p class="font-semibold text-gray-800">{{ review.user.username }}</p>
-
-                  <div class="text-yellow-400 mt-1">
-                    {% for i in 12345 %}
+                  <div class="flex items-center text-yellow-400 mt-1">
+                    {% for i in '12345' %}
                       {% if forloop.counter <= review.rating %}
-                        ★
+                        <span>★</span>
                       {% else %}
                         <span class="text-gray-300">★</span>
                       {% endif %}
                     {% endfor %}
                   </div>
                 </div>
-
                 {% if review.created_at %}
                   <span class="text-sm text-gray-400">{{ review.created_at|date:'d M Y' }}</span>
                 {% endif %}
               </div>
-
               {% if review.comment %}
                 <p class="text-gray-600 mt-3 leading-6">{{ review.comment }}</p>
               {% endif %}
@@ -143,11 +125,42 @@
           {% endfor %}
         </div>
       {% else %}
-        <div class="text-center py-8">
-          <div class="text-yellow-400 text-2xl mb-2">★★★★★</div>
+        <div class="text-center py-10">
+          <div class="text-yellow-400 text-3xl mb-3">★★★★★</div>
 
           <p class="text-gray-500">No reviews yet for this product.</p>
         </div>
+      {% endif %}
+    </div>
+    <div class="mt-8">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-2xl font-bold text-gray-900">Related Products</h2>
+      </div>
+
+      {% if related_products %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {% for product in related_products|slice:':4' %}
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition duration-200">
+              <!-- Image -->
+              <div class="h-52 bg-gray-50 flex items-center justify-center">
+                {% if product.image %}
+                  <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4 hover:scale-105 transition duration-300" />
+                {% else %}
+                  <span class="text-gray-400">No Image</span>
+                {% endif %}
+              </div>
+              <div class="p-4">
+                <h3 class="font-semibold text-gray-800 line-clamp-2 min-h-[48px]">{{ product.name }}</h3>
+
+                <p class="text-orange-400 font-bold text-lg mt-2">৳{{ product.price }}</p>
+
+                <a href="{% url 'product_details' product.slug %}" class="block text-center mt-3 py-2.5 rounded-lg bg-green-600 border border-green-600 text-white hover:bg-green-700 transition">View Product</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="bg-white border rounded-xl p-8 text-center text-gray-500">No related products found.</div>
       {% endif %}
     </div>
   </div>

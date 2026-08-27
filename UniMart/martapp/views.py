@@ -70,14 +70,18 @@ def register(request):
 
 def home(request):
 
+    for_you_products = models.Product.objects.filter(is_offer=True).order_by('-id')[:10]    
+    products = models.Product.objects.filter(is_offer=False).order_by('-id')[:15]
 
-    products = models.Product.objects.all().order_by('-id')[:12]
+
+    # products = models.Product.objects.all().order_by('-id')[:12]
     categorys = models.Category.objects.all().order_by('-created_at')[:4]
     banners = models.HeroBanner.objects.filter(is_active=True)
 
 
 
     contex = {
+        'for_you_products':for_you_products,
         'products':products,
         'categories':categorys,
         'banners':banners,
@@ -96,12 +100,20 @@ def profile(request):
     user = request.user
     profile = user.profile
 
-    contex = {
-        'user':user,
-        'profile':profile
+    orders = models.Order.objects.filter(user=user).prefetch_related('order__product')
+    total_items = sum(item.quantity for order in orders for item in order.order.all())
+
+    total_spent = sum(order.get_total_cost() for order in orders if order.paid)
+
+    context = {
+        'user': user,
+        'profile': profile,
+        'orders': orders,
+        'total_items': total_items,
+        'total_spent': total_spent,
     }
 
-    return render(request, 'user/profile.html',contex)
+    return render(request, 'user/profile.html', context)
 
 
 @login_required(login_url='login')
@@ -188,6 +200,9 @@ def productList(request):
 
 @login_required(login_url='login')
 def product_details(request,slug):
+
+
+    
 
     products = get_object_or_404(models.Product,slug=slug)
     related_products = models.Product.objects.filter(category = products.category).exclude(id = products.id)
@@ -412,45 +427,54 @@ def payment_fail(request, order_id):
     order = get_object_or_404(models.Order, id=order_id)
     order.status = 'canceled'
     order.save()
-    return redirect('checkout')
+    messages.error(request,"payment fail!")
+    return render(request,'payment_fail.html', {'order': order})
 
 @csrf_exempt
 def payment_cencle(request, order_id):
     order = get_object_or_404(models.Order, id=order_id)
     order.status = 'canceled'
     order.save()
-    return redirect('checkout')
+    messages.error(request,"payment cencle!")
+    return render(request,'payment_cencle.html', {'order': order})
 
 @login_required(login_url='login')
-def rate_product(request, product_id):
-    product = get_object_or_404(models.Product, id=product_id)
-    ordered_item = models.OrderItem.objects.filter(
-        order__user = request.user,
-        order__paid = True,
-        product=product
-    )
+def rate_product(request, order_id):
 
-    if not ordered_item.exists():
-        messages.warning(request,"You can only rate products you habe purchased.")
+    order = get_object_or_404(models.Order, id=order_id)
+
+    if order.user != request.user or not order.paid:
+        messages.warning(request,"You can only rate products from your paid orders.")
         return redirect('product_list')
+
+    ordered_item = models.OrderItem.objects.filter(order=order).first()
+    if not ordered_item:
+        messages.warning(request, "No product found in this order.")
+        return redirect('product_list')
+
+    product = ordered_item.product
+
     try:
-        rating = models.Rating.objects.get(product=product,user = request.user)
+        rating = models.Rating.objects.get(product=product,user=request.user)
     except models.Rating.DoesNotExist:
         rating = None
 
     if request.method == 'POST':
         form = RatingForm(request.POST, instance=rating)
+
         if form.is_valid():
             rating = form.save(commit=False)
             rating.product = product
             rating.user = request.user
             rating.save()
+
             return redirect('home')
+
     else:
         form = RatingForm(instance=rating)
 
-    return render(request,'home.html',{
-        'form':form,
-        'product' :product
-        })
+    return render(request, 'rate_product.html', {
+        'form': form,
+        'product': product
+    })
         

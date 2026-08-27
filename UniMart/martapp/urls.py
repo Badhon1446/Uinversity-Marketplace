@@ -21,15 +21,15 @@ urlpatterns=[
     path('checkout/', views.checkout, name='checkout'),
     path('payment/process/', views.payment_process, name = 'payment_process'),
     path('payment/success/<int:order_id>/', views.payment_success, name = 'payment_success'),
-    path('payment/fail/<int:order_id>', views.payment_fail, name = 'payment_fail'),
-    path('payment/cencel/<int:order_id>', views.payment_cencle, name = 'payment_cencel'),
+    path('payment/fail/<int:order_id>/', views.payment_fail, name = 'payment_fail'),
+    path('payment/cencel/<int:order_id>/', views.payment_cencle, name = 'payment_cencle'),
 
     # path('buy-now/<int:product_id>/', views.buy_now, name='buy_now'),    
     path('buy-now/<int:product_id>/', views.buy_now, name='buy_now'),
 
     path('profile/', views.profile, name='profile'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
-    path('rate/<int:product_id>/', views.rate_product, name= 'rate_product')
+    path('rate/<int:order_id>/', views.rate_product,name='rate_product'),
 
     
 ]

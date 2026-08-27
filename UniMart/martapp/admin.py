@@ -28,8 +28,8 @@ class RatingInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name','price','category','condition','stock','image','created_at']
-    list_filter = ['price','category','condition','created_at']
+    list_display = ['name','price','category','condition','is_offer','stock','image','created_at']
+    list_filter = ['price','category','condition','is_offer','created_at']
     list_editable = ['price','stock',]
 
     prepopulated_fields = {'slug':('name',)}

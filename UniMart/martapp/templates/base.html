@@ -10,7 +10,20 @@
       {% endblock %}
     </title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { theme: { extend: { keyframes: { offerBlink: { '0%, 45%': {
+                  backgroundColor: '#fcf000',
+                  color: '#190505'
+                },
+                '50%, 95%': { backgroundColor: '#fa0f02', color: '#f7f4f4' },
+                '100%': {
+                  backgroundColor: '#ff0000',
+                  color: '#ffffff'
+                } } }, animation: { offerBlink: 'offerBlink 0.5s infinite' } } } }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    {% comment %} <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" /> {% endcomment %}
   </head>
 
   <body class="bg-gray-100 flex flex-col min-h-screen">
@@ -25,9 +38,9 @@
             <a href="{% url 'product_list' %}" class="hover:text-yellow-400 duration-300">Product List</a>
           </li>
 
-          <!--        <li>
+          <!--         <li>
           <a href="#" class="hover:text-yellow-400 duration-300">About</a>
-        </li>        -->
+        </li>         -->
 
           <li>
             <a href="{% url 'services' %}" class="hover:text-yellow-400 duration-300">Services</a>
@@ -77,14 +90,14 @@
                 </a>
               </div>
 
-              <!--        <div
+              <!--         <div
             class="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
             <a href="{% url 'profile' %} class=" block px-5 py-3 text-gray-700 hover:bg-gray-100">My Profile</a>
 
             <a href="#" class="block px-5 py-3 text-gray-700 hover:bg-gray-100">Update Profile</a>
             <hr />
             <a href="{% url 'logout' %}" class="block px-5 py-3 text-red-600 hover:bg-red-50">Logout</a>
-          </div>        -->
+          </div>         -->
             </div>
           {% else %}
             <a href="{% url 'login' %}" class="px-5 py-2 rounded-md border border-white hover:bg-white hover:text-slate-800 duration-300">Login</a>
@@ -106,24 +119,20 @@
 
                     {% if message.tags == 'success' %}
               
-              
                     bg-green-500
+
 
             {% elif message.tags == 'error' %}
               
-                 bg-red-500
-
-
-            {% elif message.tags == 'warning' %}
               
+                 bg-red-500
+            {% elif message.tags == 'warning' %}
+                            
               bg-yellow-500 text-black
 
-
             {% else %}
-              
+                            
                bg-blue-500
-
-
             {% endif %}">{{ message }}</div>
         {% endfor %}
       </div>
@@ -137,13 +146,10 @@
 
     <footer class="bg-slate-900 text-gray-300 mt-16">
       <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-        <!-- Brand -->
         <div>
           <h2 class="text-3xl font-bold text-white mb-4">UniMart</h2>
           <p class="text-sm leading-6">UniMart is a trusted university marketplace where students can buy, sell, and exchange products safely within their campus community.</p>
         </div>
-
-        <!-- Quick Links -->
         <div>
           <h3 class="text-xl font-semibold text-white mb-4">Quick Links</h3>
           <ul class="space-y-2">
@@ -161,8 +167,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- Services -->
         <div>
           <h3 class="text-xl font-semibold text-white mb-4">Services</h3>
           <ul class="space-y-2">

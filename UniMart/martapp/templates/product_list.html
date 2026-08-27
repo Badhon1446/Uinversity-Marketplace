@@ -21,22 +21,32 @@
       <h3 class="text-3xl font-bold text-slate-800 mb-3">Explore Products</h3>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-[230px_1fr] gap-6 ">
+    <div class="grid grid-cols-1 lg:grid-cols-[230px_1fr] gap-6">
       <aside class="bg-white rounded-xl shadow-md p-5 sticky top-5 max-h-[calc(120vh-100px)] overflow-y-auto">
         <h3 class="text-lg font-semibold mb-3">Category</h3>
 
         <div class="h-[300px] overflow-y-auto space-y-2 mb-3 border-2 rounded-lg">
           <a href="?{% if searchQ %}
               
+              
+              
               search={{ searchQ }}
             {% endif %}"
             class="block px-3 py-2 rounded-lg {% if not categoryQ %}
               
+              
+              
               bg-amber-100 text-amber-700
+
+
 
             {% else %}
               
+              
+              
               hover:bg-gray-100
+
+
 
             {% endif %}">
             All Categories
@@ -45,18 +55,30 @@
           {% for category in categories %}
             <a href="?category={{ category.name }}{% if searchQ %}
                 
+                
+                
                 &search={{ searchQ }}
               {% endif %}{% if conditionQ %}
+                
+                
                 
                 &condition={{ conditionQ }}
               {% endif %}"
               class="block px-3 py-2 rounded-lg {% if categoryQ == category.name %}
                 
+                
+                
                 bg-amber-100 text-amber-700
+
+
 
               {% else %}
                 
+                
+                
                 hover:bg-gray-100
+
+
 
               {% endif %}">
               {{ category.name }}
@@ -68,18 +90,30 @@
 
         <div class="space-y-2 mb-5 border-2 rounded-lg">
           <a href="?condition=new{% if categoryQ %}
+              
+              
                &category={{ categoryQ }}
             {% endif %}
           {% if searchQ %}
+              
+              
               &search={{ searchQ }}
             {% endif %}"
             class="block px-3 py-2 rounded-lg {% if conditionQ == 'new' %}
               
+              
+              
               bg-amber-100 text-amber-700
+
+
 
             {% else %}
               
+              
+              
             hover:bg-gray-100
+
+
 
             {% endif %}">
             New
@@ -87,18 +121,30 @@
 
           <a href="?condition=used{% if categoryQ %}
               
+              
+              
               &category={{ categoryQ }}
             {% endif %}{% if searchQ %}
+              
+              
               
               &search={{ searchQ }}
             {% endif %}"
             class="block px-3 py-2 rounded-lg {% if conditionQ == 'used' %}
               
+              
+              
               bg-amber-100 text-amber-700
+
+
 
             {% else %}
               
+              
+              
               hover:bg-gray-100
+
+
 
             {% endif %}">
             Used
@@ -132,6 +178,9 @@
         <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-3">
           {% for product in products %}
             <div class="group relative bg-white rounded-lg shadow-md hover:shadow-xl duration-300 overflow-hidden">
+              {% if product.is_offer %}
+               <span class="absolute top-3 right-3 z-10 text-sm font-bold px-3 py-1.5 rounded-full shadow-lg animate-offerBlink">20% OFF</span>
+              {% endif %}
               <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110" />
 
               <div class="absolute top-0 left-0 w-full h-52 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300">

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="min-h-[80vh] flex items-center justify-center bg-gray-50 px-4 py-10">
+    <div class="w-full max-w-2xl">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div class="text-center px-6 pt-8 pb-5">
+                <h1 class="text-3xl font-bold text-gray-900">
+                    Rate This Product
+                </h1>
+
+                <p class="text-gray-500 mt-2">
+                    Share your experience with other customers
+                </p>
+            </div>
+
+
+            <!-- Product -->
+            <div class="flex flex-col items-center px-6 pb-6">
+                <div class="w-52 h-52 bg-gray-100 rounded-2xl overflow-hidden
+                            flex items-center justify-center shadow-sm">
+
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="text-gray-400 text-sm">
+                        No Image
+                    </div>
+                    {% endif %}
+
+                </div>
+                <h2 class="text-xl font-semibold text-gray-900 mt-5 text-center">
+                    {{ product.name }}
+                </h2>
+            </div>
+            <div class="border-t border-gray-100"></div>
+            <form method="POST" class="p-6 md:p-8">
+
+                {% csrf_token %}
+                <div class="mb-6">
+
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Your Rating
+                    </label>
+
+                    {{ form.rating }}
+
+                    {% if form.rating.errors %}
+                    <p class="text-red-500 text-sm mt-1">
+                        {{ form.rating.errors }}
+                    </p>
+                    {% endif %}
+
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Your Review
+                    </label>
+
+                    {{ form.comment }}
+                    {% if form.comment.errors %}
+                    <p class="text-red-500 text-sm mt-1">
+                        {{ form.comment.errors }}
+                    </p>
+                    {% endif %}
+
+                </div>
+                <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700  text-white font-semibold py-3.5 px-6   rounded-xl transition duration-200 shadow-lg shadow-indigo-200  hover:shadow-indigo-300">Submit
+                    Review
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,120 +1,296 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-10 px-4">
-  <div class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-12 gap-6">
-
-      <!-- Sidebar -->
-      <aside class="col-span-12 lg:col-span-3">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden sticky top-5">
-          <div class="bg-gradient-to-r from-lime-500 to-orange-300 px-6 py-7 text-center">
-            {% if profile.image %}
-              <img src="{{ profile.image.url }}" alt="Profile Image" class="w-24 h-24 mx-auto rounded-full object-cover border-4 border-white shadow-lg">
-            {% else %}
-              <div class="w-24 h-24 mx-auto rounded-full bg-white flex items-center justify-center shadow-lg">
-                <span class="text-gray-500 text-3xl font-bold">{{ user.first_name|first|upper }}</span>
-              </div>
-            {% endif %}
-            <h3 class="mt-4 text-lg font-bold text-white">{{ user.first_name }} {{ user.last_name }}</h3>
-            <p class="text-sm text-white/80 mt-1">{{ user.email }}</p>
-          </div>
-
-          <nav class="p-4">
-            <p class="px-3 mb-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Account</p>
-
-            <a href="{% url 'profile' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-lime-50 text-lime-600 font-semibold">
-              <i class="fa-solid fa-user w-5"></i>
-              <span>View Profile</span>
-            </a>
-
-            <a href="#" class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition">
-              <i class="fa-solid fa-box w-5"></i>
-              <span>Order History</span>
-            </a>
-
-            <div class="border-t border-gray-200 my-4"></div>
-
-            <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition">
-              <i class="fa-solid fa-right-from-bracket w-5"></i>
-              <span>Log Out</span>
-            </a>
-          </nav>
-        </div>
-      </aside>
-
-      <!-- Profile Content -->
-      <main class="col-span-12 lg:col-span-9">
-        <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
-          <div class="bg-gradient-to-r from-lime-500 to-orange-300 h-32"></div>
-
-          <div class="px-6 sm:px-10 pb-10">
-            <div class="flex justify-center -mt-20">
+  <div class="min-h-screen bg-gray-50 py-10 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-12 gap-6">
+        <aside class="col-span-12 lg:col-span-3">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden sticky top-5">
+            <div class="bg-gradient-to-r from-lime-500 to-orange-300 px-6 py-7 text-center">
               {% if profile.image %}
-                <img src="{{ profile.image.url }}" alt="Profile Image" class="w-40 h-40 rounded-full object-cover border-8 border-white shadow-xl">
+                <img src="{{ profile.image.url }}" alt="Profile Image" class="w-24 h-24 mx-auto rounded-full object-cover border-4 border-white shadow-lg" />
               {% else %}
-                <div class="w-40 h-40 rounded-full bg-gray-200 border-8 border-white shadow-xl flex items-center justify-center">
-                  <span class="text-gray-500 text-4xl font-bold">{{ user.first_name|first|upper }}</span>
+                <div class="w-24 h-24 mx-auto rounded-full bg-white flex items-center justify-center shadow-lg">
+                  <span class="text-gray-500 text-3xl font-bold">{{ user.first_name|first|upper }}</span>
                 </div>
               {% endif %}
+              <h3 class="mt-4 text-lg font-bold text-white">{{ user.first_name }} {{ user.last_name }}</h3>
+
+              <p class="text-sm text-white/80 mt-1">{{ user.email }}</p>
             </div>
 
-            <div class="text-center mt-5">
-              <h1 class="text-3xl font-bold text-gray-800">{{ user.first_name }} {{ user.last_name }}</h1>
-              {% if profile.bio %}
-                <p class="mt-3 text-gray-500 max-w-xl mx-auto">{{ profile.bio }}</p>
-              {% else %}
-                <p class="mt-3 text-gray-400">No bio added yet.</p>
-              {% endif %}
-            </div>
+            <nav class="p-4">
+              <p class="px-3 mb-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Account</p>
+              <button type="button" id="profileBtn" onclick="showSection('profileSection')" class="account-nav w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-lime-50 text-lime-600 font-semibold transition">
+                <i class="fa-solid fa-user w-5"></i>
 
-            <div class="mt-10">
-              <h2 class="text-xl font-semibold text-gray-800 mb-5">Personal Information</h2>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="bg-gray-50 rounded-xl p-5">
-                  <p class="text-sm text-gray-400">Username</p>
-                  <p class="mt-1 font-medium text-gray-800">{{ user.username }}</p>
+                <span>View Profile</span>
+              </button>
+              <button type="button" id="orderBtn" onclick="showSection('orderSection')" class="account-nav w-full flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition">
+                <i class="fa-solid fa-box w-5"></i>
+                <span>Order History</span>
+              </button>
+              <div class="border-t border-gray-200 my-4"></div>
+              <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition">
+                <i class="fa-solid fa-right-from-bracket w-5"></i>
+                <span>Log Out</span>
+              </a>
+            </nav>
+          </div>
+        </aside>
+        <main class="col-span-12 lg:col-span-9">
+          <section id="profileSection">
+            <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
+              <div class="bg-gradient-to-r from-lime-500 to-orange-300 h-32"></div>
+              <div class="px-6 sm:px-10 pb-10">
+                <div class="flex justify-center -mt-20">
+                  {% if profile.image %}
+                    <img src="{{ profile.image.url }}" alt="Profile Image" class="w-40 h-40 rounded-full object-cover border-8 border-white shadow-xl" />
+                  {% else %}
+                    <div class="w-40 h-40 rounded-full bg-gray-200 border-8 border-white shadow-xl flex items-center justify-center">
+                      <span class="text-gray-500 text-4xl font-bold">{{ user.first_name|first|upper }}</span>
+                    </div>
+                  {% endif %}
                 </div>
-
-                <div class="bg-gray-50 rounded-xl p-5">
-                  <p class="text-sm text-gray-400">Email</p>
-                  <p class="mt-1 font-medium text-gray-800">{{ user.email }}</p>
+                <div class="text-center mt-5">
+                  <h1 class="text-3xl font-bold text-gray-800">{{ user.first_name }} {{ user.last_name }}</h1>
+                  {% if profile.bio %}
+                    <p class="mt-3 text-gray-500 max-w-xl mx-auto">{{ profile.bio }}</p>
+                  {% else %}
+                    <p class="mt-3 text-gray-400">No bio added yet.</p>
+                  {% endif %}
                 </div>
+                <div class="mt-10">
+                  <h2 class="text-xl font-semibold text-gray-800 mb-5">Personal Information</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="bg-gray-50 rounded-xl p-5">
+                      <p class="text-sm text-gray-400">Username</p>
 
-                <div class="bg-gray-50 rounded-xl p-5">
-                  <p class="text-sm text-gray-400">Phone</p>
-                  <p class="mt-1 font-medium text-gray-800">{{ profile.phone|default:'Not added' }}</p>
+                      <p class="mt-1 font-medium text-gray-800">{{ user.username }}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-5">
+                      <p class="text-sm text-gray-400">Email</p>
+
+                      <p class="mt-1 font-medium text-gray-800">{{ user.email }}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-5">
+                      <p class="text-sm text-gray-400">Phone</p>
+
+                      <p class="mt-1 font-medium text-gray-800">{{ profile.phone|default:'Not added' }}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-5">
+                      <p class="text-sm text-gray-400">University</p>
+
+                      <p class="mt-1 font-medium text-gray-800">{{ profile.university|default:'Not added' }}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-5">
+                      <p class="text-sm text-gray-400">Department</p>
+                      <p class="mt-1 font-medium text-gray-800">{{ profile.department|default:'Not added' }}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-5">
+                      <p class="text-sm text-gray-400">Gender</p>
+
+                      <p class="mt-1 font-medium text-gray-800">{{ profile.gender|default:'Not added' }}</p>
+                    </div>
+                  </div>
                 </div>
-
-                <div class="bg-gray-50 rounded-xl p-5">
-                  <p class="text-sm text-gray-400">University</p>
-                  <p class="mt-1 font-medium text-gray-800">{{ profile.university|default:'Not added' }}</p>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-5">
-                  <p class="text-sm text-gray-400">Department</p>
-                  <p class="mt-1 font-medium text-gray-800">{{ profile.department|default:'Not added' }}</p>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-5">
-                  <p class="text-sm text-gray-400">Gender</p>
-                  <p class="mt-1 font-medium text-gray-800">{{ profile.gender|default:'Not added' }}</p>
+                <div class="mt-10 flex justify-center">
+                  <a href="{% url 'edit_profile' %}" class="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-lime-500 text-white font-semibold hover:bg-emerald-600 transition duration-300 shadow-md hover:shadow-lg">
+                    <i class="fa-solid fa-pen"></i>
+                    Edit Profile
+                  </a>
                 </div>
               </div>
             </div>
+          </section>
+          <section id="orderSection" class="hidden">
+            <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
+              <div class="px-6 sm:px-8 py-7 border-b border-gray-100">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Order History</h1>
 
-            <div class="mt-10 flex justify-center">
-              <a href="{% url 'edit_profile' %}" class="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-lime-500 text-white font-semibold hover:bg-emerald-600 transition duration-300 shadow-md hover:shadow-lg">
-                <i class="fa-solid fa-pen"></i>
-                Edit Profile
-              </a>
+                    <p class="text-sm text-gray-500 mt-1">View all your UniMart orders</p>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 bg-lime-500 rounded-full"></span>
+
+                    <span class="text-sm text-gray-500">{{ orders|length }} Orders</span>
+                  </div>
+                </div>
+              </div>
+              <div class="px-6 sm:px-8 py-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div class="relative overflow-hidden bg-gradient-to-br from-lime-50 to-emerald-50 border border-lime-100 rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="text-sm font-medium text-gray-500">Total Spent in UniMart</p>
+                        <h2 class="text-3xl font-bold text-gray-800 mt-2">৳{{ total_spent|floatformat:2 }}</h2>
+                      </div>
+                      <div class="w-12 h-12 rounded-xl bg-lime-500 text-white flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-bangladeshi-taka-sign text-xl"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="relative overflow-hidden bg-gradient-to-br from-orange-50 to-yellow-50 border border-orange-100 rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="text-sm font-medium text-gray-500">Total Items Ordered</p>
+
+                        <h2 class="text-3xl font-bold text-gray-800 mt-2">{{ total_items }}</h2>
+                      </div>
+
+                      <div class="w-12 h-12 rounded-xl bg-orange-400 text-white flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-box-open text-xl"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-6 sm:px-8 pb-8">
+                {% if orders %}
+                  <div class="space-y-5">
+                    {% for order in orders %}
+                      {% for item in order.order.all %}
+                        <div class="border border-gray-200 rounded-2xl p-4 sm:p-5 hover:shadow-md transition duration-300">
+                          <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                            <div class="md:col-span-2">
+                              <p class="text-xs text-gray-400 uppercase tracking-wide">Order ID</p>
+
+                              <p class="mt-1 font-bold text-gray-800">#{{ order.id }}</p>
+
+                              <p class="text-xs text-gray-400 mt-1">{{ order.created_at|date:'d M Y' }}</p>
+                            </div>
+
+                            <div class="md:col-span-4">
+                              <div class="flex items-center gap-3">
+                                {% if item.product.image %}
+                                  <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-16 h-16 rounded-xl object-cover border border-gray-200" />
+                                {% else %}
+                                  <div class="w-16 h-16 rounded-xl bg-gray-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-image text-gray-400"></i>
+                                  </div>
+                                {% endif %}
+
+                                <div class="min-w-0">
+                                  <p class="font-semibold text-gray-800 truncate">{{ item.product.name }}</p>
+
+                                  <p class="text-sm text-gray-400 mt-1">Qty: {{ item.quantity }}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="md:col-span-2">
+                              <p class="text-xs text-gray-400 uppercase tracking-wide">Price</p>
+
+                              <p class="mt-1 font-bold text-gray-800">৳{{ item.get_cost|floatformat:2 }}</p>
+
+                              {% if item.quantity > 1 %}
+                                <p class="text-xs text-gray-400">৳{{ item.product.price }} × {{ item.quantity }}</p>
+                              {% endif %}
+                            </div>
+                            <div class="md:col-span-2">
+                              <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Status</p>
+                              {% if order.status == 'pending' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">
+                                  <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                                  Pending
+                                </span>
+                              {% elif order.status == 'processing' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+                                  <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                  Processing
+                                </span>
+                              {% elif order.status == 'shipped' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold">
+                                  <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                                  Shipped
+                                </span>
+                              {% elif order.status == 'deliverd' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                                  <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                  Delivered
+                                </span>
+                              {% elif order.status == 'cancled' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+                                  <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                  Cancelled
+                                </span>
+                              {% else %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold">{{ order.status|title }}</span>
+                              {% endif %}
+                            </div>
+                            <div class="md:col-span-2">
+                              <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Payment</p>
+
+                              {% if order.paid %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
+                                  <i class="fa-solid fa-check"></i>
+                                  Paid
+                                </span>
+                              {% else %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-100 text-red-600 text-xs font-semibold">
+                                  <i class="fa-solid fa-xmark"></i>
+                                  Unpaid
+                                </span>
+                              {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <div class="text-center py-16">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
+                      <i class="fa-solid fa-box-open text-3xl text-gray-400"></i>
+                    </div>
+
+                    <h3 class="mt-5 text-xl font-semibold text-gray-700">No Orders Yet</h3>
+
+                    <p class="text-gray-400 mt-2">You haven't placed any orders on UniMart yet.</p>
+
+                    <a href="{% url 'home' %}" class="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-lime-500 text-white rounded-xl font-semibold hover:bg-lime-600 transition">
+                      <i class="fa-solid fa-cart-shopping"></i>
+                      Start Shopping
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
             </div>
-          </div>
-        </div>
-      </main>
-
+          </section>
+        </main>
+      </div>
     </div>
   </div>
-</div>
+
+  <script>
+    function showSection(sectionId) {
+      const profileSection = document.getElementById('profileSection')
+      const orderSection = document.getElementById('orderSection')
+      const profileBtn = document.getElementById('profileBtn')
+      const orderBtn = document.getElementById('orderBtn')
+    
+      profileSection.classList.add('hidden')
+      orderSection.classList.add('hidden')
+      profileBtn.classList.remove('bg-lime-50', 'text-lime-600', 'font-semibold')
+      profileBtn.classList.add('text-gray-600')
+    
+      orderBtn.classList.remove('bg-lime-50', 'text-lime-600', 'font-semibold')
+    
+      orderBtn.classList.add('text-gray-600')
+    
+      if (sectionId === 'profileSection') {
+        profileSection.classList.remove('hidden')
+        profileBtn.classList.remove('text-gray-600')
+        profileBtn.classList.add('bg-lime-50', 'text-lime-600', 'font-semibold')
+      }
+    
+      if (sectionId === 'orderSection') {
+        orderSection.classList.remove('hidden')
+        orderBtn.classList.remove('text-gray-600')
+        orderBtn.classList.add('bg-lime-50', 'text-lime-600', 'font-semibold')
+      }
+    }
+  </script>
 {% endblock %}
