@@ -788,66 +788,6 @@
   }
 },
 {
-  "model": "martapp.profile",
-  "pk": 2,
-  "fields": {
-    "user": [
-      "badhon111"
-    ],
-    "image": "media/profile_image/Ibrahimabad.jpeg",
-    "phone": "01781738264",
-    "bio": "The Developer",
-    "university": "Northern University, Bangladesh",
-    "department": "CSE",
-    "gender": "Male"
-  }
-},
-{
-  "model": "martapp.profile",
-  "pk": 3,
-  "fields": {
-    "user": [
-      "Fahim"
-    ],
-    "image": "media/profile_image/face1.jpg",
-    "phone": "0193467893",
-    "bio": "The Legends",
-    "university": "Northern University, Bangladesh",
-    "department": "CSE",
-    "gender": "Male"
-  }
-},
-{
-  "model": "martapp.profile",
-  "pk": 6,
-  "fields": {
-    "user": [
-      "badhon"
-    ],
-    "image": "media/profile_image/Ibrahimabad_BthTu9l.jpeg",
-    "phone": "None",
-    "bio": "Eat\r\nSleep \r\nCode \r\nRepeat ",
-    "university": "Northern University, Bangladesh",
-    "department": "CSE",
-    "gender": "Male"
-  }
-},
-{
-  "model": "martapp.profile",
-  "pk": 7,
-  "fields": {
-    "user": [
-      "tasrif_hasan"
-    ],
-    "image": "",
-    "phone": null,
-    "bio": null,
-    "university": "",
-    "department": "",
-    "gender": ""
-  }
-},
-{
   "model": "martapp.herobanner",
   "pk": 7,
   "fields": {
