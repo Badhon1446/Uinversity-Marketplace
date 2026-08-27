@@ -9,9 +9,23 @@ from django.db.models import Q,Min,Max,Avg
 from .utils import generate_sslcommerz_payment,send_order_confirmation_email
 from django.views.decorators.csrf import csrf_exempt
 
+
+from django.contrib.sites.models import Site
+from allauth.socialaccount.models import SocialApp
+from django.conf import settings
+
 # Create your views here.
 def user_login(request):
     print(request.method)
+    print("SITE_ID:", settings.SITE_ID)
+    print("CURRENT SITE:", Site.objects.get_current().domain)
+    print("SOCIAL APPS:", SocialApp.objects.all().values("id", "provider", "name"))
+    print(
+        "GOOGLE APP SITES:",
+        SocialApp.objects.filter(provider="google").values(
+            "id", "provider", "name"
+        )
+    )
     if request.method =='POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
