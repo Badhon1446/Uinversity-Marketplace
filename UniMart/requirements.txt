@@ -26,3 +26,6 @@ sqlparse==0.5.4
 tzdata==2025.3
 urllib3==2.5.0
 wheel==0.45.1
+
+psycopg2-binary
+dj-database-url
