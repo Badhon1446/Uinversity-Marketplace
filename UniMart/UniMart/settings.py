@@ -120,6 +120,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'uinversity-marketplace.onrender.com',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
