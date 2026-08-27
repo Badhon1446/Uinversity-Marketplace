@@ -707,7 +707,7 @@
   "pk": 16,
   "fields": {
     "name": "Instant Pot Duo 6 Qt 7-in-1 Electric Pressure Cooker",
-    "description": "multicooker, 6 quart, slow cook, rice, steam, sauté, yogurt, sterilizer, keep warm, app with guided recipes, family meals",
+    "description": "multicooker, 6 quart, slow cook, rice, steam, sautÃ©, yogurt, sterilizer, keep warm, app with guided recipes, family meals",
     "category": 6,
     "condition": "used",
     "price": 1500,
@@ -774,7 +774,7 @@
   "model": "martapp.product",
   "pk": 20,
   "fields": {
-    "name": "Men’s Luxury Analog Watch – Premium Design",
+    "name": "Menâ€™s Luxury Analog Watch â€“ Premium Design",
     "description": "You can open the box in front of the delivery person, and if everything is fine, you can pay and receive the product.",
     "category": 8,
     "condition": "used",
@@ -4086,7 +4086,7 @@
       "product"
     ],
     "object_id": "20",
-    "object_repr": "Men’s Luxury Analog Watch – Premium Design",
+    "object_repr": "Menâ€™s Luxury Analog Watch â€“ Premium Design",
     "action_flag": 1,
     "change_message": "[{\"added\": {}}]"
   }
