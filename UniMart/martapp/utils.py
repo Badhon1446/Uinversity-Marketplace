@@ -47,7 +47,7 @@ def send_order_confirmation_email(order):
 
         send_email = EmailMultiAlternatives( subject,
             'Your order has been successfully placed.',
-            'onboarding@resend.dev',
+            'UniMart <onboarding@resend.dev>',
             [order.email],
         )
 
