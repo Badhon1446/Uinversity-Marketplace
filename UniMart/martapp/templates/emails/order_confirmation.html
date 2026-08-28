@@ -1,36 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmation</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Confirmation - UniMart</title>
+  </head>
+  <body style="margin:0; padding:0; background-color:#f3f4f6; font-family:Arial, Helvetica, sans-serif;">
+    <div style="width:100%; padding:40px 15px; box-sizing:border-box;">
+      <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        <div style="background:#16a34a; padding:28px 20px; text-align:center;">
+          <div style="width:58px; height:58px; margin:0 auto 12px; background:#ffffff; border-radius:50%; line-height:58px; font-size:30px; color:#16a34a;">✓</div>
+          <h1 style="margin:0; color:#ffffff; font-size:26px;">Order Confirmed!</h1>
 
-<body style="margin:0; padding:0; background:#f4f4f4; font-family:Arial, sans-serif;">
+          <p style="margin:8px 0 0; color:#dcfce7; font-size:14px;">Thank you for shopping with UniMart</p>
+        </div>
 
-    <div style="max-width:600px; margin:40px auto; background:#ffffff; padding:30px; border-radius:10px;">
+        <div style="padding:30px 25px;">
+          <p style="margin:0 0 15px; color:#374151; font-size:15px;">
+            Hello <strong>{{ order.user.first_name }}</strong>,
+          </p>
 
-        <h2 style="color:#16a34a; text-align:center;">
-            Order Confirmed! ✓
-        </h2>
-
-        <p>Hello {{ order.user.first_name }},</p>
-
-        <p>
-            Your order <strong>#{{ order.id }}</strong>
-            has been successfully placed.
-        </p>
-
-        <p>
-            Total Amount:
-            <strong>{{ order.get_total_cost }} Tk</strong>
-        </p>
-
-        <p style="margin-top:30px;">
-            Thank you for shopping with us!
-        </p>
-
+          <p style="margin:0 0 25px; color:#6b7280; font-size:15px; line-height:1.6;">Your order has been successfully placed. We have received your order and it is now being processed.</p>
+          <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:20px; margin-bottom:25px;">
+            <p style="margin:0 0 12px; color:#6b7280; font-size:13px;">ORDER NUMBER</p>
+            <p style="margin:0 0 18px; color:#111827; font-size:20px; font-weight:bold;">#{{ order.id }}</p>
+            <div style="border-top:1px solid #e5e7eb; padding-top:15px;">
+              <table style="width:100%; border-collapse:collapse;">
+                <tr>
+                  <td style="color:#6b7280; font-size:14px; padding:5px 0;">Total Amount</td>
+                  <td style="text-align:right; color:#16a34a; font-size:18px; font-weight:bold; padding:5px 0;">{{ order.get_total_cost }} Tk</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div style="text-align:center; margin:25px 0;">
+            <span style="display:inline-block; background:#dcfce7; color:#15803d; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:bold;">✓ Payment Successful</span>
+          </div>
+          <p style="margin:0; text-align:center; color:#6b7280; font-size:14px; line-height:1.6;">We appreciate your purchase and hope you enjoy your products!</p>
+        </div>
+        <div style="background:#f9fafb; border-top:1px solid #e5e7eb; padding:20px; text-align:center;">
+          <p style="margin:0 0 6px; color:#111827; font-size:14px; font-weight:bold;">UniMart</p>
+          <p style="margin:0; color:#9ca3af; font-size:12px;">Your University Marketplace</p>
+        </div>
+      </div>
     </div>
-
-</body>
+  </body>
 </html>
