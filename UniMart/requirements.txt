@@ -22,6 +22,7 @@ idna==3.11
 kiwisolver==1.5.0
 matplotlib==3.10.9
 mysqlclient==2.2.7
+psycopg[binary]
 numpy==2.4.4
 packaging==26.2
 pillow==11.3.0
