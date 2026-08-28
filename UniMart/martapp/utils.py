@@ -3,6 +3,9 @@ import requests
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
+import threading
+import logging
+
 
 def generate_sslcommerz_payment(order,request):
     post_data = {
@@ -33,10 +36,24 @@ def generate_sslcommerz_payment(order,request):
 
     return response.json()
 
+
+logger = logging.getLogger(__name__)
+
 def send_order_confirmation_email(order):
-    subject = f"Order Confirmation - Order #{order.id}"
-    message = render_to_string('emails/order_confirmation.html', {'order': order})
-    to = order.email
-    send_email = EmailMultiAlternatives(subject, 'Your order has been successfully placed.', to=[to])
-    send_email.attach_alternative(message,"text/html")
-    send_email.send()
+    def _send():
+        try:
+            subject = f"Order Confirmation - Order #{order.id}"
+            message = render_to_string('emails/order_confirmation.html', {'order': order})
+            to = order.email
+            send_email = EmailMultiAlternatives(
+                subject,
+                'Your order has been successfully placed.',
+                to=[to]
+            )
+            send_email.attach_alternative(message, "text/html")
+            send_email.send()
+            logger.info(f"Confirmation email sent for order {order.id}")
+        except Exception as e:
+            logger.error(f"Email send failed for order {order.id}: {e}")
+
+    threading.Thread(target=_send).start()
