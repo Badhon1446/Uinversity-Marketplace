@@ -40,20 +40,19 @@ def generate_sslcommerz_payment(order,request):
 logger = logging.getLogger(__name__)
 
 def send_order_confirmation_email(order):
-    def _send():
-        try:
-            subject = f"Order Confirmation - Order #{order.id}"
-            message = render_to_string('emails/order_confirmation.html', {'order': order})
-            to = order.email
-            send_email = EmailMultiAlternatives(
-                subject,
-                'Your order has been successfully placed.',
-                to=[to]
-            )
-            send_email.attach_alternative(message, "text/html")
-            send_email.send()
-            logger.info(f"Confirmation email sent for order {order.id}")
-        except Exception as e:
-            logger.error(f"Email send failed for order {order.id}: {e}")
+    try:
+        subject = f"Order Confirmation - Order #{order.id}"
+        message = render_to_string(
+            'emails/order_confirmation.html', {'order': order})
 
-    threading.Thread(target=_send).start()
+        send_email = EmailMultiAlternatives( subject,
+            'Your order has been successfully placed.',
+            'onboarding@resend.dev',
+            [order.email],
+        )
+
+        send_email.attach_alternative(message, "text/html")
+        send_email.send()
+        logger.info(f"Confirmation email sent for order {order.id}")
+    except Exception as e:
+        logger.error(f"Email send failed for order {order.id}: {e}")
