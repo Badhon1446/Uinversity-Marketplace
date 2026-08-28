@@ -432,10 +432,10 @@ def payment_success(request,order_id):
             product.stock = 0
         product.save()
 
-    # try:
-    #     send_order_confirmation_email(order)
-    # except Exception as e:
-    #     print(f"Email sending failed for order {order.id}: {e}")
+    try:
+        send_order_confirmation_email(order)
+    except Exception as e:
+        print(f"Email sending failed for order {order.id}: {e}")
 
     messages.success(request,"payment successfull!")
     return render(request,'payment_success.html', {'order': order})
