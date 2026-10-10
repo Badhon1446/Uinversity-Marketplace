@@ -9,13 +9,14 @@ from django.db.models import Q,Min,Max,Avg
 from .utils import generate_sslcommerz_payment,send_order_confirmation_email
 from django.views.decorators.csrf import csrf_exempt
 
-
 from django.contrib.sites.models import Site
 from allauth.socialaccount.models import SocialApp
 from django.conf import settings
 
+
 # Create your views here.
 def user_login(request):
+
     print(request.method)
     print("SITE_ID:", settings.SITE_ID)
     print("CURRENT SITE:", Site.objects.get_current().domain)
@@ -37,7 +38,7 @@ def user_login(request):
         if not user.check_password(password):
             messages.error(request,'Password Invalid!')
             return render(request,'login.html')
-        auth_login(request,user)
+        auth_login(request, user, backend='allauth.account.auth_backends.AuthenticationBackend')
         request.session.set_expiry(86400 * 7)
         messages.success(request,"Login success!")
         return redirect('home')

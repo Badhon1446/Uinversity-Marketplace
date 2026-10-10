@@ -76,7 +76,7 @@
           {% if products.stock > 0 %}
             <a href="{% url 'add_to_cart' products.id %}" class="block w-full text-center py-3.5 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition duration-200">Add to Cart</a>
 
-            <a href="{% url 'cart' %}" class="block w-full text-center py-3.5 rounded-xl border-2 border-green-600 text-gray-800 font-semibold hover:bg-green-50 transition duration-200">View Cart</a>
+            <a href="{% url 'buy_now' product.id %}" class="block w-full text-center py-3.5 rounded-xl border-2 border-green-600 text-gray-800 font-semibold hover:bg-green-50 transition duration-200">View Cart</a>
           {% else %}
             <button disabled class="w-full py-3.5 rounded-xl bg-gray-300 text-gray-500 font-semibold cursor-not-allowed">Out of Stock</button>
           {% endif %}
