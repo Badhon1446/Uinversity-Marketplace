@@ -1,0 +1,118 @@
+{% load static %}
+<!-- UniMart Voice Assistant Floating Widget & Modal -->
+<div id="voice-assistant-container" class="fixed bottom-6 right-6 z-50">
+  <!-- Floating Mic Trigger Button -->
+  <button id="voice-trigger-btn"
+          type="button"
+          aria-label="UniMart ভয়েস সহকারী"
+          class="group relative flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-amber-300">
+    <!-- Pulsing Rings (Active when listening) -->
+    <span id="voice-pulse-ring" class="hidden absolute inset-0 rounded-full bg-amber-400 opacity-75 animate-ping"></span>
+    <span id="voice-pulse-ring-2" class="hidden absolute -inset-1 rounded-full bg-amber-300 opacity-40 animate-pulse"></span>
+    
+    <!-- Mic Icon -->
+    <i id="voice-mic-icon" class="fa-solid fa-microphone text-2xl transition-transform duration-300 group-hover:scale-110"></i>
+
+    <!-- Tooltip -->
+    <span class="absolute right-16 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md pointer-events-none">
+      ভয়েস সহকারী (বাংলা)
+    </span>
+  </button>
+
+  <!-- Voice Assistant Dialog / Popup Window -->
+  <div id="voice-modal"
+       class="hidden fixed bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] max-h-[80vh] bg-white rounded-2xl shadow-2xl border border-amber-100 flex flex-col overflow-hidden transition-all duration-300 transform scale-95 opacity-0 z-50">
+    
+    <!-- Modal Header -->
+    <div class="bg-gradient-to-r from-amber-500 to-yellow-600 px-4 py-3 text-white flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-300 animate-pulse"></span>
+        <h3 class="font-bold text-sm tracking-wide">UniMart ভয়েস সহকারী</h3>
+      </div>
+      <button id="voice-modal-close-btn"
+              type="button"
+              class="text-white hover:text-gray-200 p-1 rounded-full transition focus:outline-none"
+              aria-label="বন্ধ করুন">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Status & Transcript Body -->
+    <div class="p-4 flex flex-col gap-3 overflow-y-auto flex-grow max-h-[60vh]">
+      <!-- Status Badge -->
+      <div id="voice-status-box" class="flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">
+        <i id="voice-status-icon" class="fa-solid fa-circle-info text-amber-600"></i>
+        <span id="voice-status-text">মাইক বাটনে চাপ দিয়ে বাংলায় বলুন...</span>
+      </div>
+
+      <!-- User Speech Bubble -->
+      <div id="voice-user-transcript-container" class="hidden flex flex-col items-end">
+        <span class="text-[10px] text-gray-400 mb-0.5">আপনি বলেছেন</span>
+        <div class="flex items-center gap-1.5 max-w-[90%]">
+          <button id="voice-instant-search-btn" type="button" class="px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white text-[10px] rounded-lg shadow-sm font-medium transition" title="এখনই খুঁজুন">
+            <i class="fa-solid fa-magnifying-glass mr-1"></i>খুঁজুন
+          </button>
+          <div id="voice-user-transcript" class="bg-amber-500 text-white text-xs px-3 py-2 rounded-xl rounded-tr-none shadow-sm">
+          </div>
+        </div>
+      </div>
+
+      <!-- Assistant Reply Bubble -->
+      <div id="voice-assistant-reply-container" class="hidden flex flex-col items-start">
+        <span class="text-[10px] text-gray-400 mb-0.5">সহকারী</span>
+        <div class="flex items-center gap-2 bg-gray-100 text-gray-800 text-xs px-3 py-2 rounded-xl rounded-tl-none shadow-sm max-w-[90%] border border-gray-200">
+          <i id="voice-speaking-icon" class="fa-solid fa-volume-high text-amber-600"></i>
+          <span id="voice-assistant-reply-text"></span>
+        </div>
+      </div>
+
+      <!-- Suggestion Chips -->
+      <div id="voice-suggestion-chips" class="flex flex-wrap gap-1.5 pt-1">
+        <span class="w-full text-[11px] text-gray-500 font-medium">উদাহরণ (ক্লিক করে টেস্ট করুন):</span>
+        <button type="button" class="voice-chip text-[11px] bg-green-50 hover:bg-green-100 text-green-800 px-2.5 py-1 rounded-full transition border border-green-200 font-medium">
+          নতুন প্রোডাক্ট দেখাও
+        </button>
+        <button type="button" class="voice-chip text-[11px] bg-blue-50 hover:bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full transition border border-blue-200 font-medium">
+          ব্যবহৃত প্রোডাক্ট দেখাও
+        </button>
+        <button type="button" class="voice-chip text-[11px] bg-amber-50 hover:bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full transition border border-amber-200 font-medium">
+          টপ রেটেড পণ্য দেখাও
+        </button>
+        <button type="button" class="voice-chip text-[11px] bg-red-50 hover:bg-red-100 text-red-800 px-2.5 py-1 rounded-full transition border border-red-200 font-medium">
+          আজকের অফার দেখাও
+        </button>
+        <button type="button" class="voice-chip text-[11px] bg-gray-100 hover:bg-amber-100 text-gray-700 hover:text-amber-800 px-2.5 py-1 rounded-full transition border border-gray-200">
+          গেমিং আইটেম দেখাও
+        </button>
+        <button type="button" class="voice-chip text-[11px] bg-gray-100 hover:bg-amber-100 text-gray-700 hover:text-amber-800 px-2.5 py-1 rounded-full transition border border-gray-200">
+          টি-শার্ট দেখাও
+        </button>
+      </div>
+
+      <!-- Product Cards Results Area -->
+      <div id="voice-results-container" class="hidden flex flex-col gap-2 mt-2 pt-2 border-t border-gray-200">
+        <span class="text-xs font-semibold text-gray-700 flex items-center justify-between">
+          <span>পণ্যসমূহ</span>
+          <span id="voice-results-count" class="text-[11px] text-amber-600 font-bold"></span>
+        </span>
+        <div id="voice-products-grid" class="flex flex-col gap-2 max-h-56 overflow-y-auto pr-1">
+          <!-- Dynamically populated product cards -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer Controls -->
+    <div class="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+      <span class="text-[10px] text-gray-400">Google Gemini & ব্রাউজার স্পিচ</span>
+      <button id="voice-retry-btn"
+              type="button"
+              class="text-xs text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1 focus:outline-none">
+        <i class="fa-solid fa-microphone"></i>
+        <span>আবার বলুন</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- CSRF Token Carrier -->
+  {% csrf_token %}
+</div>

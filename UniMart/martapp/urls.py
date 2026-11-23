@@ -1,5 +1,6 @@
 from django.urls import path,include
 from . import views
+from . import voice_views
 from django.views.generic import TemplateView
 
 urlpatterns=[
@@ -30,6 +31,5 @@ urlpatterns=[
     path('profile/', views.profile, name='profile'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('rate/<int:order_id>/', views.rate_product,name='rate_product'),
-
-    
+    path('api/voice-assistant/', voice_views.voice_assistant_api, name='voice_assistant_api'),
 ]
