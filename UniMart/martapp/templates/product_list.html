@@ -13,6 +13,9 @@
         {% if conditionQ %}
           <input type="hidden" name="condition" value="{{ conditionQ }}" />
         {% endif %}
+        {% if ratingQ %}
+          <input type="hidden" name="rating" value="{{ ratingQ }}" />
+        {% endif %}
         <button type="submit" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-semibold transition duration-200 sm:min-w-[130px]">Search</button>
       </div>
     </form>
@@ -154,6 +157,10 @@
         <h3 class="text-lg font-semibold mb-3">Price</h3>
 
         <form method="GET" class="mb-5">
+          {% if categoryQ %}<input type="hidden" name="category" value="{{ categoryQ }}" />{% endif %}
+          {% if conditionQ %}<input type="hidden" name="condition" value="{{ conditionQ }}" />{% endif %}
+          {% if searchQ %}<input type="hidden" name="search" value="{{ searchQ }}" />{% endif %}
+          {% if ratingQ %}<input type="hidden" name="rating" value="{{ ratingQ }}" />{% endif %}
           <div class="flex gap-2 p-3 rounded-lg">
             <input type="number" name="min_price" placeholder="Min" value="{{ request.GET.min_price|default:min_price }}" class="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-lime-400" />
 
@@ -165,12 +172,36 @@
 
         <h3 class="text-lg font-semibold mb-3">Rating</h3>
 
-        <div class="space-y-2 text-amber-400">
-          <label class="block"><input type="checkbox" class="accent-amber-500" />★★★★★</label>
-          <label class="block"><input type="checkbox" class="accent-amber-500" />★★★★☆</label>
-          <label class="block"><input type="checkbox" class="accent-amber-500" />★★★☆☆</label>
-          <label class="block"><input type="checkbox" class="accent-amber-500" />★★☆☆☆</label>
-          <label class="block"><input type="checkbox" class="accent-amber-500" />★☆☆☆☆</label>
+        <div class="space-y-1 mb-5 border-2 rounded-lg p-2 text-sm">
+          <a href="?{% if categoryQ %}category={{ categoryQ }}&{% endif %}{% if conditionQ %}condition={{ conditionQ }}&{% endif %}{% if searchQ %}search={{ searchQ }}&{% endif %}{% if request.GET.min_price %}min_price={{ request.GET.min_price }}&{% endif %}{% if request.GET.max_price %}max_price={{ request.GET.max_price }}&{% endif %}"
+             class="block px-2 py-1.5 rounded-lg {% if not ratingQ %}bg-amber-100 text-amber-700 font-semibold{% else %}hover:bg-gray-100 text-gray-700{% endif %}">
+            All Ratings
+          </a>
+          <a href="?rating=5{% if categoryQ %}&category={{ categoryQ }}{% endif %}{% if conditionQ %}&condition={{ conditionQ }}{% endif %}{% if searchQ %}&search={{ searchQ }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+             class="flex items-center justify-between px-2 py-1.5 rounded-lg {% if ratingQ == '5' %}bg-amber-100 font-semibold text-amber-800{% else %}hover:bg-gray-100{% endif %}">
+            <span class="text-amber-400 text-base">★★★★★</span>
+            <span class="text-xs text-gray-600 font-medium">5.0</span>
+          </a>
+          <a href="?rating=4{% if categoryQ %}&category={{ categoryQ }}{% endif %}{% if conditionQ %}&condition={{ conditionQ }}{% endif %}{% if searchQ %}&search={{ searchQ }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+             class="flex items-center justify-between px-2 py-1.5 rounded-lg {% if ratingQ == '4' %}bg-amber-100 font-semibold text-amber-800{% else %}hover:bg-gray-100{% endif %}">
+            <span class="text-amber-400 text-base">★★★★☆</span>
+            <span class="text-xs text-gray-600 font-medium">4.0+</span>
+          </a>
+          <a href="?rating=3{% if categoryQ %}&category={{ categoryQ }}{% endif %}{% if conditionQ %}&condition={{ conditionQ }}{% endif %}{% if searchQ %}&search={{ searchQ }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+             class="flex items-center justify-between px-2 py-1.5 rounded-lg {% if ratingQ == '3' %}bg-amber-100 font-semibold text-amber-800{% else %}hover:bg-gray-100{% endif %}">
+            <span class="text-amber-400 text-base">★★★☆☆</span>
+            <span class="text-xs text-gray-600 font-medium">3.0+</span>
+          </a>
+          <a href="?rating=2{% if categoryQ %}&category={{ categoryQ }}{% endif %}{% if conditionQ %}&condition={{ conditionQ }}{% endif %}{% if searchQ %}&search={{ searchQ }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+             class="flex items-center justify-between px-2 py-1.5 rounded-lg {% if ratingQ == '2' %}bg-amber-100 font-semibold text-amber-800{% else %}hover:bg-gray-100{% endif %}">
+            <span class="text-amber-400 text-base">★★☆☆☆</span>
+            <span class="text-xs text-gray-600 font-medium">2.0+</span>
+          </a>
+          <a href="?rating=1{% if categoryQ %}&category={{ categoryQ }}{% endif %}{% if conditionQ %}&condition={{ conditionQ }}{% endif %}{% if searchQ %}&search={{ searchQ }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+             class="flex items-center justify-between px-2 py-1.5 rounded-lg {% if ratingQ == '1' %}bg-amber-100 font-semibold text-amber-800{% else %}hover:bg-gray-100{% endif %}">
+            <span class="text-amber-400 text-base">★☆☆☆☆</span>
+            <span class="text-xs text-gray-600 font-medium">1.0+</span>
+          </a>
         </div>
       </aside>
 
@@ -198,13 +229,21 @@
 
                 <p class="text-sm text-gray-500">{{ product.description|truncatechars:20 }}</p>
 
-                <p class="text-sm mt-1">
-                  Condition:{% if product.condition == 'new' %}
-                    <span class="font-medium text-lime-600">{{ product.get_condition_display }}</span>
-                  {% elif product.condition == 'used' %}
-                    <span class="font-medium text-red-600">{{ product.get_condition_display }}</span>
+                <div class="flex items-center justify-between text-sm mt-1">
+                  <p>
+                    Condition:{% if product.condition == 'new' %}
+                      <span class="font-medium text-lime-600">{{ product.get_condition_display }}</span>
+                    {% elif product.condition == 'used' %}
+                      <span class="font-medium text-red-600">{{ product.get_condition_display }}</span>
+                    {% endif %}
+                  </p>
+                  {% if product.avg_rating %}
+                    <span class="flex items-center gap-1 text-xs font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200" title="Average Rating">
+                      <i class="fa-solid fa-star text-[10px] text-amber-500"></i>
+                      {{ product.avg_rating|floatformat:1 }}
+                    </span>
                   {% endif %}
-                </p>
+                </div>
 
                 <h4 class="flex items-center gap-1 mt-2">
                   <span class="text-2xl font-bold text-amber-600">৳</span>

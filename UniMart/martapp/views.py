@@ -112,8 +112,9 @@ def home(request):
 
 @login_required(login_url='login')
 def profile(request):
+
     user = request.user
-    profile = user.profile
+    profile, created = models.Profile.objects.get_or_create(user=user)
 
     orders = models.Order.objects.filter(user=user).prefetch_related('order__product')
     total_items = sum(item.quantity for order in orders for item in order.order.all())
@@ -126,6 +127,7 @@ def profile(request):
         'orders': orders,
         'total_items': total_items,
         'total_spent': total_spent,
+        'created':created,
     }
 
     return render(request, 'user/profile.html', context)
@@ -135,7 +137,7 @@ def profile(request):
 def edit_profile(request):
 
     user = request.user
-    profile = user.profile
+    profile, created = models.Profile.objects.get_or_create(user=user)
     if request.method =='POST':
         user.first_name = request.POST.get('name')
         user.last_name = request.POST.get('last_name')
@@ -164,7 +166,8 @@ def edit_profile(request):
 
     context = {
         'profile':profile,
-        'user':user
+        'user':user,
+        'created':created,
     }
 
     return render(request,'user/edit_profile.html',context)
@@ -175,8 +178,9 @@ def productList(request):
     categoryQ = request.GET.get('category','').strip()
     conditionQ = request.GET.get('condition','').strip()
     searchQ = request.GET.get('search','').strip()
+    ratingQ = request.GET.get('rating','').strip()
 
-    products = models.Product.objects.all().order_by('-id')
+    products = models.Product.objects.annotate(avg_rating=Avg('rating__rating')).order_by('-id')
     categorys = models.Category.objects.all().order_by('-id')
 
     if categoryQ:
@@ -192,6 +196,13 @@ def productList(request):
             
         ).distinct()
 
+    if ratingQ:
+        try:
+            r_val = float(ratingQ)
+            products = products.filter(avg_rating__gte=r_val)
+        except (ValueError, TypeError):
+            pass
+
     min_price = products.aggregate(Min('price'))['price__min']
     max_price = products.aggregate(Max('price'))['price__max']
 
@@ -206,6 +217,7 @@ def productList(request):
         'searchQ':searchQ,
         'categoryQ':categoryQ,
         'conditionQ':conditionQ,
+        'ratingQ':ratingQ,
         'min_price':min_price,
         'max_price':max_price
     }
