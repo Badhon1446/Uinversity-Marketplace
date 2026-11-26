@@ -71,7 +71,7 @@ INSTALLED_APPS = [
     "anymail",
 
 ]
-SITE_ID = 1
+SITE_ID = 2
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -231,5 +231,5 @@ STORAGES = {
 
 # Google Gemini AI Voice Assistant Configuration
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
 

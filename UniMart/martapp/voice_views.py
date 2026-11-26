@@ -9,7 +9,11 @@ from django.db.models import Q, Avg
 from django.urls import reverse
 
 from .models import Product, Category
-from .services.gemini_service import analyze_user_voice_query
+from .services.gemini_service import (
+    analyze_user_voice_query,
+    extract_intent_locally,
+    parse_rating_from_text,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -81,16 +85,24 @@ def voice_assistant_api(request):
             "status": "empty_text"
         })
 
-    # 3. Call Gemini Function Calling Service
+    # 3. Call Gemini Function Calling Service (with zero-downtime fallback)
     gemini_result = analyze_user_voice_query(user_text)
     fn_name = gemini_result.get("function_name")
     fn_args = gemini_result.get("args") or {}
     error = gemini_result.get("error")
 
-    if error:
+    # If Gemini failed or didn't resolve, enforce local intent parser
+    if not fn_name:
+        local_intent = extract_intent_locally(user_text)
+        if local_intent.get("function_name"):
+            fn_name = local_intent.get("function_name")
+            fn_args = local_intent.get("args") or {}
+            error = None
+
+    if error and not fn_name:
         logger.warning("Voice assistant Gemini error: %s", error)
 
-    # Fallback when no function was called by Gemini or an error occurred
+    # Fallback when no function could be identified
     if not fn_name:
         fallback_reply = "বুঝতে পারিনি, আবার বলুন।"
         if error == "API_KEY_NOT_CONFIGURED":
@@ -102,7 +114,6 @@ def voice_assistant_api(request):
             "action": None,
             "debug_error": error if settings.DEBUG else None
         })
-
 
     # 4. Execute Read-Only Database Queries Based on Selected Function
     products_qs = Product.objects.none()
@@ -129,28 +140,23 @@ def voice_assistant_api(request):
             condition_arg = (fn_args.get("condition") or "").strip().lower()
             min_rating_arg = fn_args.get("min_rating")
 
-            # Heuristic boosting for condition (ensures instant 100% accuracy)
+            # Condition boosting (ensures instant 100% accuracy)
             if not condition_arg:
                 if any(w in user_lower for w in ["নতুন", "new", "ব্র্যান্ড নিউ", "brand new"]):
                     condition_arg = "new"
                 elif any(w in user_lower for w in ["ব্যবহৃত", "পুরাতন", "used", "সেকেন্ড হ্যান্ড", "সেকেন্ডহ্যান্ড", "second hand"]):
                     condition_arg = "used"
 
-            # Heuristic boosting for rating
+            # Rating boosting (handles "3 star", "3star", "৩ স্টার", "৩স্টার", "3 star rating", "top rated")
             if not min_rating_arg:
-                if any(w in user_lower for w in ["টপ রেটেড", "ভালো রেটিং", "টপ রেটিং", "top rated"]):
-                    min_rating_arg = 4
-                elif "৫ স্টার" in user_lower or "5 star" in user_lower:
-                    min_rating_arg = 5
-                elif "৪ স্টার" in user_lower or "4 star" in user_lower:
-                    min_rating_arg = 4
+                min_rating_arg = parse_rating_from_text(user_lower)
 
             # Filter by Condition (new vs used)
             if condition_arg in ("new", "used"):
                 products_qs = products_qs.filter(condition=condition_arg)
                 condition_applied = condition_arg
 
-            # Filter by Rating
+            # Filter by Rating (e.g. 3-star rating -> products with avg_rating >= 3.0)
             if min_rating_arg:
                 try:
                     r_val = float(min_rating_arg)
@@ -184,6 +190,7 @@ def voice_assistant_api(request):
                     Q(description__icontains=search_text_arg)
                 )
 
+            # Ordering: if rating is applied, prioritize highest-rated products first
             if rating_applied:
                 products_qs = products_qs.order_by("-avg_rating", "-id")
             else:
@@ -201,19 +208,34 @@ def voice_assistant_api(request):
         products = list(products_qs[:12])
         count = len(products)
 
-        # 5. Build Bengali Voice Reply
+        # 5. Build Dynamic Bengali Voice Reply
         if count == 0:
-            reply_text = "এই ধরনের পণ্য পাওয়া যায়নি।"
+            if rating_applied:
+                star_bn = to_bn_digits(int(rating_applied))
+                reply_text = f"{star_bn} স্টার বা তার বেশি রেটিংয়ের কোনো পণ্য পাওয়া যায়নি।"
+            elif condition_applied:
+                cond_bn = "নতুন" if condition_applied == "new" else "ব্যবহৃত"
+                reply_text = f"কোনো {cond_bn} পণ্য পাওয়া যায়নি।"
+            else:
+                reply_text = "এই ধরনের পণ্য পাওয়া যায়নি।"
         else:
             count_bn = to_bn_digits(count)
             if fn_name == "show_offers":
-                reply_text = f"{count_bn}টি অফারের পণ্য পাওয়া গেছে।"
+                reply_text = f"{count_bn}টি অফারের পণ্য পাওয়া গেছে।"
+            elif rating_applied and condition_applied:
+                star_bn = to_bn_digits(int(rating_applied))
+                cond_bn = "নতুন" if condition_applied == "new" else "ব্যবহৃত"
+                reply_text = f"{star_bn} স্টার রেটিংয়ের {count_bn}টি {cond_bn} পণ্য পাওয়া গেছে।"
+            elif rating_applied:
+                star_bn = to_bn_digits(int(rating_applied))
+                if "টপ রেটেড" in user_lower or "top rated" in user_lower:
+                    reply_text = f"{count_bn}টি টপ রেটেড পণ্য পাওয়া গেছে।"
+                else:
+                    reply_text = f"{star_bn} স্টার বা তার বেশি রেটিংয়ের {count_bn}টি পণ্য পাওয়া গেছে।"
             elif condition_applied == "new":
                 reply_text = f"{count_bn}টি নতুন পণ্য পাওয়া গেছে।"
             elif condition_applied == "used":
                 reply_text = f"{count_bn}টি ব্যবহৃত পণ্য পাওয়া গেছে।"
-            elif rating_applied:
-                reply_text = f"{count_bn}টি টপ রেটেড পণ্য পাওয়া গেছে।"
             else:
                 reply_text = f"{count_bn}টি পণ্য পাওয়া গেছে।"
 
